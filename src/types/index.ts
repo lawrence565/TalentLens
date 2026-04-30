@@ -52,6 +52,15 @@ export const IssueCategory = [
 ] as const
 export type IssueCategory = (typeof IssueCategory)[number]
 
+export const categoryLabels: Record<IssueCategory, string> = {
+  content_clarity: 'Content clarity',
+  structure: 'Structure',
+  keywords: 'Keywords',
+  missing_sections: 'Missing sections',
+  formatting: 'Formatting',
+  ats_risk: 'ATS risk',
+}
+
 export const ATSCheck = {
   types: ['parsing', 'headings', 'readability', 'file_format'],
   statuses: ['pass', 'warning', 'fail'],
@@ -79,6 +88,7 @@ export interface DiagnosisIssue {
 }
 
 export interface SuggestionItemProps {
+  reportId: string
   issue: DiagnosisIssue
   onUpdateStatus: (
     issueId: string,

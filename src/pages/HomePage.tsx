@@ -23,7 +23,7 @@ const getUploadProgress = (
 
   return {
     file,
-    progress,
+    progress: status === 'uploading' ? progress : 100,
     status: status === 'uploading' ? 'uploading' : 'success',
   }
 }
@@ -51,9 +51,31 @@ const HomePage: React.FC<HomePageProps> = ({ analytics = defaultAnalytics }) => 
 
   const handleFileUpload = async (file: File): Promise<void> => {
     setCurrentFile(file)
+    const startTime = Date.now()
+    analytics.uploadStarted({
+      fileType: file.type,
+      fileSizeBytes: file.size,
+    })
 
     try {
-      await submitResume(file)
+      const diagnosisReport = await submitResume(file)
+      const durationMs = Date.now() - startTime
+
+      if (diagnosisReport) {
+        analytics.uploadCompleted({
+          resumeId: diagnosisReport.resumeId,
+          analysisId: diagnosisReport.analysisId,
+          durationMs,
+        })
+        analytics.reportViewed({
+          reportId: diagnosisReport.id,
+          analysisId: diagnosisReport.analysisId,
+        })
+        analytics.timeToReportMeasured({
+          reportId: diagnosisReport.id,
+          durationMs,
+        })
+      }
     } catch {
       // useDiagnosis owns the user-facing error copy.
     }
@@ -123,11 +145,16 @@ const HomePage: React.FC<HomePageProps> = ({ analytics = defaultAnalytics }) => 
           <>
             <DiagnosisReportSection report={report} />
             <ReportRating reportId={report.id} analytics={analytics} />
-            <SuggestionsSection report={report} updateIssueStatus={updateIssueStatus} />
+            <SuggestionsSection
+              report={report}
+              updateIssueStatus={updateIssueStatus}
+              analytics={analytics}
+            />
             <FollowUpPanel
               report={report}
               followUpResponse={followUpResponse}
               askFollowUp={askFollowUp}
+              analytics={analytics}
             />
           </>
         )}
