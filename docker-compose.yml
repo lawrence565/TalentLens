@@ -1,0 +1,40 @@
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile.backend
+    container_name: talentlens-backend
+    environment:
+      PORT: 5174
+      TALENTLENS_DATABASE_PATH: /app/data/talentlens.sqlite
+      TALENTLENS_UPLOAD_DIR: /app/uploads
+      DIAGNOSIS_PROVIDER: fallback
+    ports:
+      - "5174:5174"
+    volumes:
+      - backend-data:/app/data
+      - backend-uploads:/app/uploads
+    networks:
+      - talentlens-local
+
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend
+    container_name: talentlens-frontend
+    environment:
+      VITE_TALENTLENS_API_BASE_URL: http://localhost:5174/api
+    ports:
+      - "5173:5173"
+    depends_on:
+      - backend
+    networks:
+      - talentlens-local
+
+networks:
+  talentlens-local:
+    name: talentlens-local
+
+volumes:
+  backend-data:
+  backend-uploads:

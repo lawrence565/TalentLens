@@ -1,0 +1,15 @@
+FROM node:24-alpine
+
+WORKDIR /app
+
+COPY package.json package-lock.json ./
+RUN npm ci
+
+COPY . .
+
+ENV NODE_ENV=development
+ENV VITE_TALENTLENS_API_BASE_URL=http://localhost:5174/api
+
+EXPOSE 5173
+
+CMD ["npm", "run", "dev:web:docker"]

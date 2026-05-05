@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { createMockTalentLensClient } from '../services/mockTalentLensClient'
+import { createTalentLensClient } from '../services/talentLensClientFactory'
 import type { TalentLensClient } from '../services/talentLensClient'
 import type {
   DiagnosisIssue,
@@ -67,7 +67,7 @@ export const useDiagnosis = ({
   const defaultClientRef = useRef<TalentLensClient | null>(null)
 
   if (!defaultClientRef.current) {
-    defaultClientRef.current = createMockTalentLensClient()
+    defaultClientRef.current = createTalentLensClient()
   }
 
   const activeClient = client ?? defaultClientRef.current

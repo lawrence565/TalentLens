@@ -1,0 +1,17 @@
+FROM node:24-alpine
+
+WORKDIR /app
+
+COPY package.json package-lock.json ./
+RUN npm ci
+
+COPY . .
+
+ENV NODE_ENV=development
+ENV PORT=5174
+ENV TALENTLENS_DATABASE_PATH=/app/data/talentlens.sqlite
+ENV TALENTLENS_UPLOAD_DIR=/app/uploads
+
+EXPOSE 5174
+
+CMD ["npm", "run", "start:server"]
