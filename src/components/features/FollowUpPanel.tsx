@@ -48,16 +48,16 @@ const FollowUpPanel: React.FC<FollowUpPanelProps> = ({
 
     setIsLoading(true)
     setError(null)
-    analytics?.followUpAsked({
-      reportId: report.id,
-      issueId: selectedIssueId || undefined,
-      questionLength: trimmedQuestion.length,
-    })
 
     try {
       const nextResponse = await askFollowUp({
         issueId: selectedIssueId || undefined,
         question: trimmedQuestion,
+      })
+      analytics?.followUpAsked({
+        reportId: report.id,
+        issueId: selectedIssueId || undefined,
+        questionLength: trimmedQuestion.length,
       })
       setLocalResponse(nextResponse as FollowUpPanelResponse)
     } catch {

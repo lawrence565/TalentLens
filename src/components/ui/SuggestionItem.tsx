@@ -32,14 +32,14 @@ const SuggestionItem: React.FC<ExtendedSuggestionItemProps> = ({
   const handleUpdateStatus = async (status: Exclude<IssueStatus, 'open'>): Promise<void> => {
     setPending(true)
     setError(null)
-    analytics?.issueInteracted({
-      reportId,
-      issueId: issue.id,
-      action: status,
-    })
 
     try {
       await onUpdateStatus(issue.id, status)
+      analytics?.issueInteracted({
+        reportId,
+        issueId: issue.id,
+        action: status,
+      })
     } catch {
       setError('Could not update issue status. Please try again.')
     } finally {
