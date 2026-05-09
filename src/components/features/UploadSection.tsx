@@ -106,7 +106,7 @@ const UploadSection: React.FC<UploadSectionProps> = ({ onFileUpload, uploadProgr
         <h2 className={`font-sans text-base font-bold ${titleColor}`}>{title}</h2>
         <p className="mt-1.5 font-sans text-sm text-n-500 leading-relaxed">{subtitle}</p>
 
-        {isUploading && (
+        {(isUploading || isSuccess) && (
           <div className="mt-5">
             <Progress
               value={uploadProgress.progress}

@@ -86,7 +86,7 @@ const HomePage: React.FC<HomePageProps> = ({ analytics = defaultAnalytics }) => 
     reset()
   }
 
-  const showStatus = status === 'uploading' || status === 'analyzing' || status === 'slowAnalysis'
+  const showStatus = status === 'analyzing' || status === 'slowAnalysis'
   const showError = (status === 'error' || status === 'timeout') && error
   const showReport = status === 'reportReady' && report
 
@@ -103,7 +103,7 @@ const HomePage: React.FC<HomePageProps> = ({ analytics = defaultAnalytics }) => 
           <section className="mx-auto max-w-2xl px-6 pb-8" aria-live="polite">
             <Card>
               <p className="text-sm font-semibold text-gray-900">
-                {status === 'uploading' ? 'Uploading resume' : 'Analyzing resume'}
+                Analyzing resume
               </p>
               <p className="mt-2 text-sm leading-6 text-gray-600">
                 {status === 'slowAnalysis' && slowAnalysisMessage
