@@ -94,7 +94,7 @@ describe('SuggestionsSection', () => {
     await user.click(within(issue).getByRole('button', { name: /mark handled/i }))
 
     expect(updateIssueStatus).toHaveBeenCalledWith('issue-impact', 'handled')
-    expect(issue).toHaveTextContent(/status:\s*handled/i)
+    expect(within(issue).getByTestId('issue-status')).toHaveTextContent(/handled/i)
     expect(screen.getByText(baseReport.summary)).toBeInTheDocument()
     expect(issue).toHaveTextContent(baseReport.issues[0].reason)
     expect(issue).toHaveTextContent(baseReport.issues[0].nextAction)
@@ -113,7 +113,7 @@ describe('SuggestionsSection', () => {
     await user.click(within(issue).getByRole('button', { name: /dismiss issue/i }))
 
     expect(updateIssueStatus).toHaveBeenCalledWith('issue-formatting', 'dismissed')
-    expect(issue).toHaveTextContent(/status:\s*dismissed/i)
+    expect(within(issue).getByTestId('issue-status')).toHaveTextContent(/dismissed/i)
     expect(screen.getByText(baseReport.summary)).toBeInTheDocument()
     expect(issue).toHaveTextContent(baseReport.issues[1].reason)
     expect(issue).toHaveTextContent(baseReport.issues[1].nextAction)
@@ -144,9 +144,9 @@ describe('SuggestionsSection', () => {
 
     resolveUpdate({ ...baseReport.issues[0], status: 'handled' })
 
-    expect(await within(issue).findByText(/status:\s*handled/i)).toBeInTheDocument()
-    expect(handledButton).not.toBeDisabled()
-    expect(dismissedButton).not.toBeDisabled()
+    expect(await within(issue).findByTestId('issue-status')).toHaveTextContent(/handled/i)
+    expect(within(issue).queryByRole('button', { name: /mark handled/i })).not.toBeInTheDocument()
+    expect(within(issue).queryByRole('button', { name: /dismiss issue/i })).not.toBeInTheDocument()
   })
 
   it('shows accessible failure feedback when an async status update fails', async () => {
@@ -164,7 +164,7 @@ describe('SuggestionsSection', () => {
     expect(await within(issue).findByRole('alert')).toHaveTextContent(
       /could not update issue status/i,
     )
-    expect(issue).toHaveTextContent(/status:\s*open/i)
+    expect(within(issue).getByTestId('issue-status')).toHaveTextContent(/open/i)
   })
 
   it('fires issueInteracted analytics when an issue is handled or dismissed', async () => {
