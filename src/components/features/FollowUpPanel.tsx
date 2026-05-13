@@ -1,6 +1,7 @@
 import { FormEvent, useState } from 'react'
 import type { Analytics } from '../../services/analytics'
 import type { DiagnosisReport, FollowUpResponse } from '../../types'
+import Button from '../ui/Button'
 import Card from '../ui/Card'
 
 type FollowUpPanelResponse = FollowUpResponse & {
@@ -71,25 +72,25 @@ const FollowUpPanel: React.FC<FollowUpPanelProps> = ({
     <section className="mx-auto max-w-4xl px-6 pb-16">
       <Card>
         <div className="mb-5">
-          <p className="text-sm font-medium uppercase tracking-wide text-primary-600">
+          <p className="font-sans text-sm font-semibold uppercase tracking-wide text-brand-600">
             Optional guidance
           </p>
-          <h2 className="mt-2 text-xl font-semibold text-gray-900">Ask a follow-up</h2>
-          <p className="mt-2 text-sm leading-6 text-gray-600">
+          <h2 className="mt-2 font-sans text-xl font-bold text-n-900">Ask a follow-up</h2>
+          <p className="mt-2 font-sans text-sm leading-6 text-n-600">
             Ask about one report issue when you need a more direct next step.
           </p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label htmlFor="follow-up-issue" className="text-sm font-medium text-gray-800">
+            <label htmlFor="follow-up-issue" className="font-sans text-sm font-semibold text-n-800">
               Issue
             </label>
             <select
               id="follow-up-issue"
               value={selectedIssueId}
               onChange={(event) => setSelectedIssueId(event.target.value)}
-              className="mt-2 w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-100"
+              className="mt-2 w-full rounded-lg border-[1.5px] border-n-300 bg-white px-3 py-2 font-sans text-sm text-n-900 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-100 transition-colors"
             >
               {report.issues.map((issue) => (
                 <option key={issue.id} value={issue.id}>
@@ -100,7 +101,7 @@ const FollowUpPanel: React.FC<FollowUpPanelProps> = ({
           </div>
 
           <div>
-            <label htmlFor="follow-up-question" className="text-sm font-medium text-gray-800">
+            <label htmlFor="follow-up-question" className="font-sans text-sm font-semibold text-n-800">
               Question
             </label>
             <textarea
@@ -108,37 +109,33 @@ const FollowUpPanel: React.FC<FollowUpPanelProps> = ({
               value={question}
               onChange={(event) => setQuestion(event.target.value)}
               rows={3}
-              className="mt-2 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-900 focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-100"
+              className="mt-2 w-full rounded-lg border-[1.5px] border-n-300 bg-white px-3 py-2 font-sans text-sm text-n-900 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-100 transition-colors resize-y"
               placeholder="What should I fix first?"
             />
           </div>
 
           {error && (
-            <p role="alert" className="text-sm font-medium text-red-700">
+            <p role="alert" className="font-sans text-sm font-medium text-high-500">
               {error}
             </p>
           )}
 
-          <button
-            type="submit"
-            disabled={!canSubmit}
-            className="inline-flex items-center justify-center rounded-lg bg-primary-500 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-primary-600 disabled:cursor-not-allowed disabled:opacity-60"
-          >
+          <Button type="submit" disabled={!canSubmit} loading={isLoading}>
             {submitLabel}
-          </button>
+          </Button>
         </form>
 
         {response && (
-          <div className="mt-6 border-t border-gray-200 pt-5" aria-live="polite">
-            <h3 className="text-base font-semibold text-gray-900">Direct answer</h3>
-            <p className="mt-2 text-sm leading-6 text-gray-700">{response.answer}</p>
+          <div className="mt-6 border-t border-n-200 pt-5" aria-live="polite">
+            <h3 className="font-sans text-base font-semibold text-n-900">Direct answer</h3>
+            <p className="mt-2 font-sans text-sm leading-6 text-n-700">{response.answer}</p>
 
             {hasItems(response.rewriteExamples) && (
               <div className="mt-5">
-                <h3 className="text-base font-semibold text-gray-900">Rewrite examples</h3>
+                <h3 className="font-sans text-base font-semibold text-n-900">Rewrite examples</h3>
                 <ul className="mt-3 space-y-2 text-sm leading-6 text-gray-700">
                   {response.rewriteExamples.map((example) => (
-                    <li key={example} className="rounded-lg bg-gray-50 p-3">
+                    <li key={example} className="rounded-lg bg-n-50 p-3 font-sans text-sm text-n-700">
                       {example}
                     </li>
                   ))}
@@ -148,8 +145,8 @@ const FollowUpPanel: React.FC<FollowUpPanelProps> = ({
 
             {hasItems(response.nextActions) && (
               <div className="mt-5">
-                <h3 className="text-base font-semibold text-gray-900">Next actions</h3>
-                <ul className="mt-3 list-disc space-y-2 pl-5 text-sm leading-6 text-gray-700">
+                <h3 className="font-sans text-base font-semibold text-n-900">Next actions</h3>
+                <ul className="mt-3 list-disc space-y-2 pl-5 font-sans text-sm leading-6 text-n-700">
                   {response.nextActions.map((action) => (
                     <li key={action}>{action}</li>
                   ))}

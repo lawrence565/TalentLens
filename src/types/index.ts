@@ -19,8 +19,8 @@ export interface FileUploadProgress {
 // Component Props Types
 export interface ButtonProps {
   children: React.ReactNode;
-  variant?: "primary" | "secondary" | "outline";
-  size?: "sm" | "md" | "lg";
+  variant?: "primary" | "secondary" | "outline" | "ghost" | "danger";
+  size?: "xs" | "sm" | "md" | "lg";
   disabled?: boolean;
   loading?: boolean;
   onClick?: () => void;

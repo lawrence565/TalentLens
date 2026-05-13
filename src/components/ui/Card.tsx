@@ -1,30 +1,32 @@
-import React from "react";
+import React from 'react'
+
+type CardVariant = 'default' | 'elevated' | 'upload' | 'brand' | 'error' | 'success'
 
 interface CardProps {
-  children: React.ReactNode;
-  variant?: "default" | "error";
-  className?: string;
+  children: React.ReactNode
+  variant?: CardVariant
+  className?: string
 }
 
-const variantClasses: Record<NonNullable<CardProps["variant"]>, string> = {
-  default: "border-gray-200 bg-white",
-  error: "border-red-200 bg-red-50",
-};
+const variantClasses: Record<CardVariant, string> = {
+  default:  'bg-white border border-n-200 shadow-sm',
+  elevated: 'bg-white shadow-md',
+  upload:   'bg-n-50 border-2 border-dashed border-n-300',
+  brand:    'bg-brand-50 border border-brand-200',
+  error:    'bg-high-50 border border-high-100',
+  success:  'bg-low-50 border border-low-100',
+}
 
-const Card: React.FC<CardProps> = ({
-  children,
-  variant = "default",
-  className = "",
-}) => (
+const Card: React.FC<CardProps> = ({ children, variant = 'default', className = '' }) => (
   <div
     className={[
-      "rounded-lg border p-6 shadow-sm",
+      'rounded-[14px] p-6',
       variantClasses[variant],
       className,
-    ].join(" ")}
+    ].join(' ')}
   >
     {children}
   </div>
-);
+)
 
-export default Card;
+export default Card

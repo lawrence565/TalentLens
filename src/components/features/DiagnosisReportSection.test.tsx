@@ -90,7 +90,7 @@ describe('DiagnosisReportSection', () => {
     expect(
       screen.getByRole('heading', { name: /resume diagnosis report/i }),
     ).toBeInTheDocument()
-    expect(screen.getByText('72')).toBeInTheDocument()
+    expect(screen.getByTestId('score-value')).toHaveTextContent('72')
     expect(screen.getByText(/overall assessment/i)).toBeInTheDocument()
     expect(screen.getByText(report.summary)).toBeInTheDocument()
     expect(screen.getByText(/risks/i)).toHaveTextContent(
