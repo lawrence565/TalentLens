@@ -19,11 +19,11 @@ const SuggestionsSection: React.FC<SuggestionsSectionProps> = ({
 }) => (
   <section className="mx-auto max-w-4xl px-6 pb-16">
     <div className="mb-6">
-      <p className="text-sm font-medium uppercase tracking-wide text-primary-600">
+      <p className="text-sm font-medium uppercase tracking-wide text-brand-600">
         All issues
       </p>
-      <h2 className="mt-2 text-2xl font-semibold text-gray-900">Issue actions</h2>
-      <p className="mt-3 text-sm leading-6 text-gray-600">{report.summary}</p>
+      <h2 className="mt-2 text-2xl font-semibold text-n-900">Issue actions</h2>
+      <p className="mt-3 text-sm leading-6 text-n-600">{report.summary}</p>
     </div>
 
     <div className="space-y-4">

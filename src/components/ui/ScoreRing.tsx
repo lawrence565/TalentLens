@@ -11,10 +11,10 @@ const getColorClass = (s: number) =>
 
 const getStrokeColor = (s: number) =>
   s >= 85
-    ? 'oklch(0.622 0.150 158)'
+    ? 'var(--color-low-500)'
     : s >= 65
-    ? 'oklch(0.508 0.200 265)'
-    : 'oklch(0.715 0.158 72)'
+    ? 'var(--color-brand-500)'
+    : 'var(--color-med-500)'
 
 const getLabel = (s: number) =>
   s >= 85 ? 'Strong Foundation' : s >= 65 ? 'Focused Work Needed' : 'High-Priority Review'
@@ -58,7 +58,7 @@ const ScoreRing: React.FC<ScoreRingProps> = ({ score, size = 160, animate = true
             cy={size / 2}
             r={r}
             fill="none"
-            stroke="oklch(0.916 0.010 80)"
+            stroke="var(--color-n-200)"
             strokeWidth={strokeWidth}
           />
           <circle
