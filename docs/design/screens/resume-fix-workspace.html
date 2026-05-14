@@ -444,7 +444,6 @@
         function handleApply() {
           if (!selectedSuggestion) return;
           setApplied(true);
-          onApply(issue.id);
         }
 
         function handleCopy() {
@@ -465,6 +464,7 @@
         }
 
         function handleDone() {
+          onApply(issue.id);
           setDone(true);
           setTimeout(() => onDone(issue.id), 300);
         }
