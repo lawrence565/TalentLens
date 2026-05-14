@@ -1774,7 +1774,7 @@ const FixProgressPanel = ({ tasks, onDone }) => {
   ).length;
   const allDone = handledCount === tasks.length;
 
-  const estimatedScore = 72 + handledCount * 4;
+  const estimatedScore = Math.min(100, 72 + handledCount * 4);
 
   // SVG arc for score ring
   const size = 96;
@@ -1984,7 +1984,7 @@ const ResumeFixWorkspaceSection = () => {
 
   const handleApply = (id, text) => {
     setTasks((prev) =>
-      prev.map((t) => (t.id === id ? { ...t, appliedText: text } : t))
+      prev.map((t) => (t.id === id ? { ...t, appliedText: text, status: "handled" } : t))
     );
   };
 
