@@ -212,7 +212,7 @@ const BrandSection = () => {
 
       {/* Brand on dark */}
       <Block style={{ background: "var(--tl-n-900)", borderColor: "transparent" }}>
-        <Label style={{ color: "oklch(0.42 0.01 265)" }}>Reversed — Dark Context</Label>
+        <Label style={{ color: "var(--tl-n-400)" }}>Reversed — Dark Context</Label>
         <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
           <TLLogoMark size={40} />
           <span
@@ -230,7 +230,7 @@ const BrandSection = () => {
             style={{
               fontFamily: "var(--tl-mono)",
               fontSize: 11,
-              color: "oklch(0.42 0.01 265)",
+              color: "var(--tl-n-400)",
               marginLeft: 8,
             }}
           >

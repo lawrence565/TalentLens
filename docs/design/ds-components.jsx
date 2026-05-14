@@ -3,6 +3,21 @@
 // Loaded by design-system.html via Babel standalone (UMD, no import/export)
 // All hooks are available as globals: useState, useEffect, useRef
 
+// ── LOCAL LAYOUT HELPERS ──────────────────────────────────────────────────────
+// ds-foundation equivalents for this file (global scope, no imports)
+const STitle = ({ children }) => (
+  <h2 style={{ fontFamily: "var(--tl-font)", fontSize: 24, fontWeight: 800, color: "var(--tl-n-900)", marginBottom: 8, letterSpacing: "-0.01em" }}>{children}</h2>
+);
+const SDesc = ({ children }) => (
+  <p style={{ fontFamily: "var(--tl-font)", fontSize: 14, color: "var(--tl-text-muted)", lineHeight: 1.6, marginBottom: 32, maxWidth: 560 }}>{children}</p>
+);
+const SBlock = ({ children, title }) => (
+  <div style={{ marginBottom: 40 }}>
+    {title && <div style={{ fontFamily: "var(--tl-mono)", fontSize: 11, fontWeight: 700, letterSpacing: "0.07em", textTransform: "uppercase", color: "var(--tl-n-400)", marginBottom: 16 }}>{title}</div>}
+    {children}
+  </div>
+);
+
 // ── BUTTON SECTION ────────────────────────────────────────────────────────────
 const ButtonSection = () => {
   const [hovered, setHovered] = useState(null);
@@ -81,56 +96,14 @@ const ButtonSection = () => {
 
   return (
     <section id="buttons" style={{ paddingBottom: 72 }}>
-      <h2
-        style={{
-          fontFamily: "var(--tl-font)",
-          fontSize: 22,
-          fontWeight: 800,
-          color: "var(--tl-n-900)",
-          letterSpacing: "-0.02em",
-          marginBottom: 6,
-        }}
-      >
-        Buttons
-      </h2>
-      <p
-        style={{
-          fontFamily: "var(--tl-font)",
-          fontSize: 14,
-          color: "var(--tl-text-muted)",
-          lineHeight: 1.65,
-          marginBottom: 36,
-          maxWidth: 560,
-        }}
-      >
+      <STitle>Buttons</STitle>
+      <SDesc>
         Five semantic variants across three sizes. Primary and Danger use
         filled backgrounds; Secondary and Ghost use outlined/transparent
         treatments. All use border-radius 8px and weight 600.
-      </p>
+      </SDesc>
 
-      {/* Variants */}
-      <div
-        style={{
-          background: "var(--tl-surface)",
-          border: "1px solid var(--tl-border)",
-          borderRadius: 14,
-          padding: 28,
-          marginBottom: 24,
-        }}
-      >
-        <div
-          style={{
-            fontFamily: "var(--tl-font)",
-            fontSize: 10,
-            fontWeight: 700,
-            letterSpacing: "0.09em",
-            textTransform: "uppercase",
-            color: "var(--tl-n-400)",
-            marginBottom: 20,
-          }}
-        >
-          Variants
-        </div>
+      <SBlock title="Variants">
         <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
           {variants.map(({ key, label, style, note }) => (
             <div
@@ -163,31 +136,9 @@ const ButtonSection = () => {
             </div>
           ))}
         </div>
-      </div>
+      </SBlock>
 
-      {/* Sizes */}
-      <div
-        style={{
-          background: "var(--tl-surface)",
-          border: "1px solid var(--tl-border)",
-          borderRadius: 14,
-          padding: 28,
-          marginBottom: 24,
-        }}
-      >
-        <div
-          style={{
-            fontFamily: "var(--tl-font)",
-            fontSize: 10,
-            fontWeight: 700,
-            letterSpacing: "0.09em",
-            textTransform: "uppercase",
-            color: "var(--tl-n-400)",
-            marginBottom: 20,
-          }}
-        >
-          Size Scale
-        </div>
+      <SBlock title="Size Scale">
         <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
           {sizes.map(({ key, label, padding, fontSize }) => (
             <button
@@ -205,30 +156,9 @@ const ButtonSection = () => {
             </button>
           ))}
         </div>
-      </div>
+      </SBlock>
 
-      {/* States */}
-      <div
-        style={{
-          background: "var(--tl-surface)",
-          border: "1px solid var(--tl-border)",
-          borderRadius: 14,
-          padding: 28,
-        }}
-      >
-        <div
-          style={{
-            fontFamily: "var(--tl-font)",
-            fontSize: 10,
-            fontWeight: 700,
-            letterSpacing: "0.09em",
-            textTransform: "uppercase",
-            color: "var(--tl-n-400)",
-            marginBottom: 20,
-          }}
-        >
-          States
-        </div>
+      <SBlock title="States">
         <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
           <button
             style={{
@@ -311,7 +241,7 @@ const ButtonSection = () => {
             Loading…
           </button>
         </div>
-      </div>
+      </SBlock>
     </section>
   );
 };
@@ -393,55 +323,14 @@ const BadgeSection = () => {
 
   return (
     <section id="badges" style={{ paddingBottom: 72 }}>
-      <h2
-        style={{
-          fontFamily: "var(--tl-font)",
-          fontSize: 22,
-          fontWeight: 800,
-          color: "var(--tl-n-900)",
-          letterSpacing: "-0.02em",
-          marginBottom: 6,
-        }}
-      >
-        Badges &amp; Tags
-      </h2>
-      <p
-        style={{
-          fontFamily: "var(--tl-font)",
-          fontSize: 14,
-          color: "var(--tl-text-muted)",
-          lineHeight: 1.65,
-          marginBottom: 36,
-          maxWidth: 560,
-        }}
-      >
+      <STitle>Badges &amp; Tags</STitle>
+      <SDesc>
         Severity badges use a colored dot + semantic background tint. The pill
         shape (border-radius 9999) distinguishes them from rectangular card
         labels. All badges use weight 600 at 11px.
-      </p>
+      </SDesc>
 
-      <div
-        style={{
-          background: "var(--tl-surface)",
-          border: "1px solid var(--tl-border)",
-          borderRadius: 14,
-          padding: 28,
-          marginBottom: 24,
-        }}
-      >
-        <div
-          style={{
-            fontFamily: "var(--tl-font)",
-            fontSize: 10,
-            fontWeight: 700,
-            letterSpacing: "0.09em",
-            textTransform: "uppercase",
-            color: "var(--tl-n-400)",
-            marginBottom: 20,
-          }}
-        >
-          Severity Badges
-        </div>
+      <SBlock title="Severity Badges">
         <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
           {badges.map(({ label, bg, border, text, dot, note }) => (
             <div
@@ -461,30 +350,9 @@ const BadgeSection = () => {
             </div>
           ))}
         </div>
-      </div>
+      </SBlock>
 
-      {/* In context */}
-      <div
-        style={{
-          background: "var(--tl-surface)",
-          border: "1px solid var(--tl-border)",
-          borderRadius: 14,
-          padding: 28,
-        }}
-      >
-        <div
-          style={{
-            fontFamily: "var(--tl-font)",
-            fontSize: 10,
-            fontWeight: 700,
-            letterSpacing: "0.09em",
-            textTransform: "uppercase",
-            color: "var(--tl-n-400)",
-            marginBottom: 20,
-          }}
-        >
-          In Context — Issue Card Header
-        </div>
+      <SBlock title="In Context — Issue Card Header">
         <div
           style={{
             background: "var(--tl-n-50)",
@@ -535,7 +403,7 @@ const BadgeSection = () => {
             />
           </div>
         </div>
-      </div>
+      </SBlock>
     </section>
   );
 };
@@ -544,48 +412,15 @@ const BadgeSection = () => {
 const CardSection = () => {
   return (
     <section id="cards" style={{ paddingBottom: 72 }}>
-      <h2
-        style={{
-          fontFamily: "var(--tl-font)",
-          fontSize: 22,
-          fontWeight: 800,
-          color: "var(--tl-n-900)",
-          letterSpacing: "-0.02em",
-          marginBottom: 6,
-        }}
-      >
-        Cards
-      </h2>
-      <p
-        style={{
-          fontFamily: "var(--tl-font)",
-          fontSize: 14,
-          color: "var(--tl-text-muted)",
-          lineHeight: 1.65,
-          marginBottom: 36,
-          maxWidth: 560,
-        }}
-      >
+      <STitle>Cards</STitle>
+      <SDesc>
         Cards are the primary content container. Issue cards use a 4px
         left-border for instant severity scanning. Stat cards display
         monospace data values. All use border-radius 14px with a 1px border
         and tl-shadow-sm.
-      </p>
+      </SDesc>
 
-      {/* Base card */}
-      <div
-        style={{
-          fontFamily: "var(--tl-font)",
-          fontSize: 10,
-          fontWeight: 700,
-          letterSpacing: "0.09em",
-          textTransform: "uppercase",
-          color: "var(--tl-n-400)",
-          marginBottom: 12,
-        }}
-      >
-        Card Variants
-      </div>
+      <SBlock title="Card Variants">
       <div style={{ display: "flex", flexDirection: "column", gap: 16, marginBottom: 32 }}>
         {/* Plain card */}
         <div
@@ -703,21 +538,9 @@ const CardSection = () => {
           </div>
         ))}
       </div>
+      </SBlock>
 
-      {/* Stat cards */}
-      <div
-        style={{
-          fontFamily: "var(--tl-font)",
-          fontSize: 10,
-          fontWeight: 700,
-          letterSpacing: "0.09em",
-          textTransform: "uppercase",
-          color: "var(--tl-n-400)",
-          marginBottom: 12,
-        }}
-      >
-        Stat Cards
-      </div>
+      <SBlock title="Stat Cards">
       <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 14 }}>
         {[
           { label: "ATS Score", value: "72", unit: "/ 100", color: "var(--tl-brand-500)" },
@@ -773,6 +596,7 @@ const CardSection = () => {
           </div>
         ))}
       </div>
+      </SBlock>
     </section>
   );
 };
@@ -806,58 +630,15 @@ const InputSection = () => {
 
   return (
     <section id="inputs" style={{ paddingBottom: 72 }}>
-      <h2
-        style={{
-          fontFamily: "var(--tl-font)",
-          fontSize: 22,
-          fontWeight: 800,
-          color: "var(--tl-n-900)",
-          letterSpacing: "-0.02em",
-          marginBottom: 6,
-        }}
-      >
-        Form Controls
-      </h2>
-      <p
-        style={{
-          fontFamily: "var(--tl-font)",
-          fontSize: 14,
-          color: "var(--tl-text-muted)",
-          lineHeight: 1.65,
-          marginBottom: 36,
-          maxWidth: 560,
-        }}
-      >
+      <STitle>Form Controls</STitle>
+      <SDesc>
         Input fields, selects, checkboxes, and textareas. All use border-radius
         8px, 1.5px border with border-strong color, and transition to
         brand-300 on focus.
-      </p>
+      </SDesc>
 
-      <div
-        style={{
-          background: "var(--tl-surface)",
-          border: "1px solid var(--tl-border)",
-          borderRadius: 14,
-          padding: 28,
-          marginBottom: 24,
-          display: "flex",
-          flexDirection: "column",
-          gap: 20,
-        }}
-      >
-        <div
-          style={{
-            fontFamily: "var(--tl-font)",
-            fontSize: 10,
-            fontWeight: 700,
-            letterSpacing: "0.09em",
-            textTransform: "uppercase",
-            color: "var(--tl-n-400)",
-            marginBottom: 4,
-          }}
-        >
-          Input Types
-        </div>
+      <SBlock title="Input Types">
+        <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
 
         {/* Text input */}
         <div>
@@ -929,30 +710,9 @@ const InputSection = () => {
             ))}
           </div>
         </div>
-      </div>
+      </SBlock>
 
-      {/* Input states */}
-      <div
-        style={{
-          background: "var(--tl-surface)",
-          border: "1px solid var(--tl-border)",
-          borderRadius: 14,
-          padding: 28,
-        }}
-      >
-        <div
-          style={{
-            fontFamily: "var(--tl-font)",
-            fontSize: 10,
-            fontWeight: 700,
-            letterSpacing: "0.09em",
-            textTransform: "uppercase",
-            color: "var(--tl-n-400)",
-            marginBottom: 20,
-          }}
-        >
-          States
-        </div>
+      <SBlock title="States">
         <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
           <div style={{ display: "flex", gap: 12 }}>
             <div style={{ flex: 1 }}>
@@ -1045,7 +805,7 @@ const InputSection = () => {
             </div>
           </div>
         </div>
-      </div>
+      </SBlock>
     </section>
   );
 };

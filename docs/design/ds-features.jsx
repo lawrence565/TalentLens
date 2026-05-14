@@ -379,7 +379,7 @@ const ScoreSection = () => {
 };
 
 // ── UPLOAD SECTION ────────────────────────────────────────────────────────────
-const UploadSection_ = () => {
+const UploadSection = () => {
   const [uploadState, setUploadState] = useState("idle");
 
   const states = ["idle", "dragging", "uploading", "success", "error"];
@@ -1226,7 +1226,7 @@ const HeaderSection = () => {
               style={{
                 fontFamily: "var(--tl-mono)",
                 fontSize: 10,
-                color: "oklch(0.5 0.01 265)",
+                color: "var(--tl-n-500)",
                 marginLeft: 4,
               }}
             >
@@ -1257,7 +1257,7 @@ const HeaderSection = () => {
             style={{
               fontFamily: "var(--tl-font)",
               fontSize: 14,
-              color: "oklch(0.58 0.01 265)",
+              color: "var(--tl-text-subtle)",
               lineHeight: 1.6,
               maxWidth: 460,
               marginBottom: 24,
@@ -1291,9 +1291,9 @@ const HeaderSection = () => {
                 fontSize: 13,
                 padding: "10px 20px",
                 borderRadius: 8,
-                border: "1px solid oklch(0.3 0.01 265)",
+                border: "1px solid var(--tl-border)",
                 background: "transparent",
-                color: "oklch(0.7 0.01 265)",
+                color: "var(--tl-n-400)",
                 cursor: "pointer",
               }}
             >
