@@ -1,0 +1,280 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TalentLens · Product Screens</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&family=JetBrains+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --tl-brand-500: oklch(0.508 0.2 265);
+        --tl-brand-50: oklch(0.975 0.013 265);
+        --tl-brand-100: oklch(0.938 0.037 265);
+        --tl-brand-600: oklch(0.433 0.213 265);
+        --tl-brand-700: oklch(0.352 0.192 265);
+        --tl-n-50: oklch(0.987 0.004 95);
+        --tl-n-100: oklch(0.962 0.007 85);
+        --tl-n-200: oklch(0.916 0.01 80);
+        --tl-n-300: oklch(0.844 0.01 75);
+        --tl-n-400: oklch(0.718 0.009 265);
+        --tl-n-500: oklch(0.583 0.01 265);
+        --tl-n-600: oklch(0.472 0.01 265);
+        --tl-n-700: oklch(0.364 0.01 265);
+        --tl-n-900: oklch(0.174 0.008 265);
+        --tl-surface: #ffffff;
+        --tl-bg: oklch(0.987 0.004 95);
+        --tl-border: oklch(0.916 0.01 80);
+        --tl-text: oklch(0.174 0.008 265);
+        --tl-text-muted: oklch(0.472 0.01 265);
+        --tl-font: "Plus Jakarta Sans", system-ui, sans-serif;
+        --tl-mono: "JetBrains Mono", "Fira Code", monospace;
+        --tl-shadow-sm: 0 2px 4px rgba(0,0,0,0.07), 0 1px 2px rgba(0,0,0,0.04);
+        --tl-shadow-md: 0 4px 12px rgba(0,0,0,0.09), 0 2px 4px rgba(0,0,0,0.04);
+      }
+
+      *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+      body {
+        font-family: var(--tl-font);
+        background: var(--tl-bg);
+        color: var(--tl-text);
+        line-height: 1.5;
+        -webkit-font-smoothing: antialiased;
+        min-height: 100vh;
+      }
+
+      header {
+        background: var(--tl-surface);
+        border-bottom: 1px solid var(--tl-border);
+        box-shadow: var(--tl-shadow-sm);
+        padding: 0 32px;
+        height: 56px;
+        display: flex;
+        align-items: center;
+        gap: 10;
+      }
+
+      .logo {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        text-decoration: none;
+      }
+
+      .logo-text {
+        font-weight: 800;
+        font-size: 15px;
+        color: var(--tl-brand-700);
+        letter-spacing: -0.3px;
+      }
+
+      main {
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 56px 32px 80px;
+      }
+
+      .page-heading {
+        margin-bottom: 8px;
+      }
+
+      .page-heading h1 {
+        font-size: 28px;
+        font-weight: 800;
+        letter-spacing: -0.6px;
+        color: var(--tl-text);
+        margin-bottom: 6px;
+      }
+
+      .page-heading p {
+        font-size: 14px;
+        color: var(--tl-text-muted);
+      }
+
+      .section-label {
+        font-family: var(--tl-mono);
+        font-size: 10px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        color: var(--tl-n-400);
+        margin: 40px 0 16px;
+      }
+
+      .screen-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+        gap: 16px;
+      }
+
+      .screen-card {
+        background: var(--tl-surface);
+        border: 1px solid var(--tl-border);
+        border-radius: 12px;
+        padding: 20px 22px;
+        text-decoration: none;
+        color: inherit;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        box-shadow: var(--tl-shadow-sm);
+        transition: box-shadow 0.15s ease, border-color 0.15s ease, transform 0.15s ease;
+        cursor: pointer;
+      }
+
+      .screen-card:hover {
+        box-shadow: var(--tl-shadow-md);
+        border-color: var(--tl-brand-500);
+        transform: translateY(-1px);
+      }
+
+      .screen-card.disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+        pointer-events: none;
+      }
+
+      .card-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 10px;
+        background: var(--tl-brand-50);
+        border: 1px solid var(--tl-brand-100);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 18px;
+      }
+
+      .card-icon.muted {
+        background: var(--tl-n-100);
+        border-color: var(--tl-n-200);
+      }
+
+      .card-title {
+        font-size: 15px;
+        font-weight: 700;
+        letter-spacing: -0.2px;
+        color: var(--tl-text);
+      }
+
+      .card-desc {
+        font-size: 13px;
+        color: var(--tl-text-muted);
+        line-height: 1.55;
+      }
+
+      .card-badge {
+        display: inline-flex;
+        align-items: center;
+        font-size: 10px;
+        font-family: var(--tl-mono);
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        border-radius: 99px;
+        padding: 2px 9px;
+        width: fit-content;
+      }
+
+      .badge-ready {
+        background: var(--tl-brand-50);
+        color: var(--tl-brand-600);
+        border: 1px solid var(--tl-brand-100);
+      }
+
+      .badge-soon {
+        background: var(--tl-n-100);
+        color: var(--tl-n-500);
+        border: 1px solid var(--tl-n-200);
+      }
+
+      .ds-link {
+        margin-top: 48px;
+        padding-top: 32px;
+        border-top: 1px solid var(--tl-border);
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .ds-link a {
+        font-size: 13px;
+        color: var(--tl-brand-600);
+        text-decoration: none;
+        font-weight: 600;
+      }
+
+      .ds-link a:hover { text-decoration: underline; }
+
+      .ds-link-sep {
+        font-size: 13px;
+        color: var(--tl-n-300);
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <a href="index.html" class="logo">
+        <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+          <circle cx="12" cy="12" r="9" stroke="oklch(0.508 0.2 265)" stroke-width="2.5" fill="oklch(0.975 0.013 265)" />
+          <circle cx="16" cy="16" r="6" stroke="oklch(0.433 0.213 265)" stroke-width="2" fill="none" />
+          <line x1="20.5" y1="20.5" x2="25" y2="25" stroke="oklch(0.352 0.192 265)" stroke-width="2.5" stroke-linecap="round" />
+        </svg>
+        <span class="logo-text">TalentLens</span>
+      </a>
+    </header>
+
+    <main>
+      <div class="page-heading">
+        <h1>Product Screens</h1>
+        <p>Live HTML previews of TalentLens product screens — built with the design system.</p>
+      </div>
+
+      <p class="section-label">Screens</p>
+
+      <div class="screen-grid">
+        <!-- Resume Fix Workspace — available -->
+        <a href="screens/resume-fix-workspace.html" class="screen-card">
+          <div class="card-icon">🛠</div>
+          <div class="card-title">Resume Fix Workspace</div>
+          <div class="card-desc">
+            AI-diagnosed issues with selectable rewrites, before/after diffs, and a live progress sidebar.
+          </div>
+          <span class="card-badge badge-ready">Ready</span>
+        </a>
+
+        <!-- Job Match Mode — coming soon -->
+        <div class="screen-card disabled">
+          <div class="card-icon muted">🎯</div>
+          <div class="card-title">Job Match Mode</div>
+          <div class="card-desc">
+            Tailor a resume to a specific job description and see keyword match scores.
+          </div>
+          <span class="card-badge badge-soon">Coming next</span>
+        </div>
+
+        <!-- Version History — coming soon -->
+        <div class="screen-card disabled">
+          <div class="card-icon muted">🕑</div>
+          <div class="card-title">Version History</div>
+          <div class="card-desc">
+            Browse and restore previous versions of a resume with side-by-side comparison.
+          </div>
+          <span class="card-badge badge-soon">Coming next</span>
+        </div>
+      </div>
+
+      <div class="ds-link">
+        <a href="design-system.html">Design System →</a>
+        <span class="ds-link-sep">·</span>
+        <span style="font-size: 13px; color: var(--tl-text-muted);">TalentLens Design System v1.0</span>
+      </div>
+    </main>
+  </body>
+</html>
