@@ -1306,10 +1306,505 @@ const HeaderSection = () => {
   );
 };
 
-// ── RESUME FIX PLACEHOLDER STUBS ──────────────────────────────────────────────
-// These will be fully implemented in Tasks 2 and 3.
+// ── RESUME FIX COMPONENTS ─────────────────────────────────────────────────────
 
-const PlaceholderStub = ({ name, description }) => (
+// RewriteSuggestion — selectable AI rewrite option button
+const RewriteSuggestion = ({ suggestion, selected, onSelect }) => (
+  <button
+    type="button"
+    onClick={onSelect}
+    style={{
+      textAlign: "left",
+      width: "100%",
+      display: "block",
+      border: selected
+        ? "2px solid var(--tl-brand-500)"
+        : "1px solid var(--tl-border)",
+      background: selected ? "var(--tl-brand-50)" : "var(--tl-n-50)",
+      borderRadius: 10,
+      padding: "14px 16px",
+      cursor: "pointer",
+      minHeight: 44,
+    }}
+  >
+    <div
+      style={{
+        fontFamily: "var(--tl-mono)",
+        fontSize: 11,
+        fontWeight: 600,
+        textTransform: "uppercase",
+        letterSpacing: "0.06em",
+        color: selected ? "var(--tl-brand-600)" : "var(--tl-text-muted)",
+        marginBottom: 8,
+      }}
+    >
+      {suggestion.label}
+    </div>
+    <p
+      style={{
+        fontFamily: "var(--tl-font)",
+        fontSize: 13,
+        lineHeight: 1.6,
+        color: "var(--tl-text)",
+        margin: 0,
+      }}
+    >
+      {suggestion.text}
+    </p>
+  </button>
+);
+
+// BeforeAfterDiff — side-by-side original vs revised text
+const BeforeAfterDiff = ({ before, after }) => (
+  <div style={{ overflowX: "auto" }}>
+    <div
+      className="fix-diff"
+      style={{
+        display: "grid",
+        gridTemplateColumns: "1fr 1fr",
+        gap: 16,
+      }}
+    >
+      {/* Before panel */}
+      <div
+        style={{
+          background: "white",
+          border: "1px solid var(--tl-border)",
+          borderRadius: 10,
+          padding: 16,
+        }}
+      >
+        <div
+          style={{
+            fontFamily: "var(--tl-mono)",
+            fontSize: 10,
+            fontWeight: 700,
+            textTransform: "uppercase",
+            letterSpacing: "0.07em",
+            color: "var(--tl-n-400)",
+            marginBottom: 10,
+          }}
+        >
+          Before
+        </div>
+        <p
+          style={{
+            fontFamily: "var(--tl-font)",
+            fontSize: 13,
+            lineHeight: 1.6,
+            color: "var(--tl-text-muted)",
+            fontStyle: before ? "normal" : "italic",
+            margin: 0,
+          }}
+        >
+          {before || "No original text provided."}
+        </p>
+      </div>
+
+      {/* After panel */}
+      <div
+        style={{
+          background: "var(--tl-brand-50)",
+          border: "1px solid var(--tl-brand-200)",
+          borderRadius: 10,
+          padding: 16,
+        }}
+      >
+        <div
+          style={{
+            fontFamily: "var(--tl-mono)",
+            fontSize: 10,
+            fontWeight: 700,
+            textTransform: "uppercase",
+            letterSpacing: "0.07em",
+            color: "var(--tl-brand-600)",
+            marginBottom: 10,
+          }}
+        >
+          After
+        </div>
+        <p
+          style={{
+            fontFamily: "var(--tl-font)",
+            fontSize: 13,
+            lineHeight: 1.6,
+            color: "var(--tl-text)",
+            fontWeight: 500,
+            margin: 0,
+          }}
+        >
+          {after}
+        </p>
+      </div>
+    </div>
+  </div>
+);
+
+// ResumeFixTask — main actionable task card for a single issue
+const ResumeFixTask = ({ issue, onApply, onDismiss }) => {
+  const [selectedSuggestionId, setSelectedSuggestionId] = useState(null);
+  const [appliedText, setAppliedText] = useState(null);
+  const [done, setDone] = useState(false);
+  const [copied, setCopied] = useState(false);
+
+  const severityColor =
+    issue.severity === "high"
+      ? "var(--tl-high-500)"
+      : issue.severity === "medium"
+      ? "var(--tl-med-500)"
+      : "var(--tl-low-500)";
+
+  const severityBadgeStyle =
+    issue.severity === "high"
+      ? { background: "var(--tl-high-50)", color: "var(--tl-high-500)" }
+      : issue.severity === "medium"
+      ? { background: "var(--tl-med-50)", color: "var(--tl-med-500)" }
+      : { background: "var(--tl-low-50)", color: "var(--tl-low-500)" };
+
+  const handleApply = () => {
+    const selected = issue.suggestions.find((s) => s.id === selectedSuggestionId);
+    if (!selected) return;
+    setAppliedText(selected.text);
+    onApply?.(issue.id, selected.text);
+  };
+
+  const handleDismiss = () => {
+    setDone(true);
+    onDismiss?.(issue.id);
+  };
+
+  const handleCopy = () => {
+    navigator.clipboard.writeText(appliedText);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 1500);
+  };
+
+  if (done) {
+    return (
+      <div
+        style={{
+          background: "white",
+          borderRadius: 12,
+          borderLeft: `4px solid ${severityColor}`,
+          border: "1px solid var(--tl-border)",
+          padding: "16px 24px",
+          boxShadow: "var(--tl-shadow-sm)",
+          marginBottom: 16,
+          opacity: 0.5,
+          display: "flex",
+          alignItems: "center",
+          gap: 10,
+        }}
+      >
+        <span
+          style={{
+            fontSize: 16,
+            color: "var(--tl-low-500)",
+            fontWeight: 700,
+          }}
+        >
+          ✓
+        </span>
+        <span
+          style={{
+            fontFamily: "var(--tl-font)",
+            fontSize: 13,
+            color: "var(--tl-low-500)",
+            fontWeight: 600,
+          }}
+        >
+          Issue handled
+        </span>
+        <span
+          style={{
+            fontFamily: "var(--tl-font)",
+            fontSize: 13,
+            color: "var(--tl-text-muted)",
+            marginLeft: 4,
+          }}
+        >
+          · {issue.title}
+        </span>
+      </div>
+    );
+  }
+
+  return (
+    <div
+      style={{
+        background: "white",
+        borderRadius: 12,
+        borderLeft: `4px solid ${severityColor}`,
+        border: "1px solid var(--tl-border)",
+        padding: "20px 24px",
+        boxShadow: "var(--tl-shadow-sm)",
+        marginBottom: 16,
+      }}
+    >
+      {/* Header row */}
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "flex-start",
+          marginBottom: 12,
+        }}
+      >
+        {/* Left: priority badge + title */}
+        <div style={{ display: "flex", alignItems: "center" }}>
+          <div
+            style={{
+              width: 22,
+              height: 22,
+              background: "var(--tl-brand-500)",
+              color: "white",
+              fontFamily: "var(--tl-mono)",
+              fontSize: 11,
+              fontWeight: 700,
+              borderRadius: "50%",
+              display: "inline-flex",
+              alignItems: "center",
+              justifyContent: "center",
+              marginRight: 10,
+              flexShrink: 0,
+            }}
+          >
+            {issue.priority}
+          </div>
+          <span
+            style={{
+              fontFamily: "var(--tl-font)",
+              fontSize: 15,
+              fontWeight: 700,
+              color: "var(--tl-text)",
+            }}
+          >
+            {issue.title}
+          </span>
+        </div>
+
+        {/* Right: severity badge */}
+        <span
+          style={{
+            padding: "3px 10px",
+            borderRadius: 9999,
+            fontFamily: "var(--tl-mono)",
+            fontSize: 10,
+            fontWeight: 700,
+            textTransform: "uppercase",
+            letterSpacing: "0.07em",
+            flexShrink: 0,
+            marginLeft: 12,
+            ...severityBadgeStyle,
+          }}
+        >
+          {issue.severity}
+        </span>
+      </div>
+
+      {/* Meta row */}
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          gap: 6,
+          fontFamily: "var(--tl-mono)",
+          fontSize: 11,
+          color: "var(--tl-text-subtle)",
+          marginBottom: 12,
+        }}
+      >
+        <span>›</span>
+        <span>{issue.affectedSection}</span>
+      </div>
+
+      {/* Reason */}
+      <p
+        style={{
+          fontFamily: "var(--tl-font)",
+          fontSize: 13,
+          color: "var(--tl-text-muted)",
+          lineHeight: 1.6,
+          marginBottom: 16,
+          margin: "0 0 16px",
+        }}
+      >
+        {issue.reason}
+      </p>
+
+      {/* Original text */}
+      {issue.originalText && (
+        <div style={{ marginBottom: 16 }}>
+          <div
+            style={{
+              fontFamily: "var(--tl-mono)",
+              fontSize: 10,
+              textTransform: "uppercase",
+              color: "var(--tl-n-400)",
+              marginBottom: 6,
+            }}
+          >
+            Original
+          </div>
+          <div
+            style={{
+              background: "var(--tl-n-50)",
+              borderLeft: "3px solid var(--tl-n-300)",
+              padding: "10px 14px",
+              borderRadius: "0 6px 6px 0",
+              fontFamily: "var(--tl-font)",
+              fontSize: 13,
+              color: "var(--tl-text-muted)",
+              lineHeight: 1.5,
+            }}
+          >
+            {issue.originalText}
+          </div>
+        </div>
+      )}
+
+      {/* Rewrite suggestions */}
+      <div style={{ marginBottom: 16 }}>
+        <div
+          style={{
+            fontFamily: "var(--tl-mono)",
+            fontSize: 10,
+            textTransform: "uppercase",
+            color: "var(--tl-n-400)",
+            marginBottom: 8,
+          }}
+        >
+          AI Rewrite Options
+        </div>
+        <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+          {issue.suggestions.map((sug) => (
+            <RewriteSuggestion
+              key={sug.id}
+              suggestion={sug}
+              selected={selectedSuggestionId === sug.id}
+              onSelect={() =>
+                setSelectedSuggestionId(
+                  selectedSuggestionId === sug.id ? null : sug.id
+                )
+              }
+            />
+          ))}
+        </div>
+      </div>
+
+      {/* Before/After diff (shown after applying) */}
+      {appliedText && (
+        <div style={{ marginBottom: 16 }}>
+          <BeforeAfterDiff before={issue.originalText} after={appliedText} />
+        </div>
+      )}
+
+      {/* Action row */}
+      <div style={{ display: "flex", gap: 8, marginTop: 16 }}>
+        {/* Apply button */}
+        <button
+          type="button"
+          onClick={handleApply}
+          disabled={selectedSuggestionId === null}
+          style={{
+            background: "var(--tl-brand-500)",
+            color: "white",
+            border: "none",
+            borderRadius: 8,
+            padding: "9px 18px",
+            fontFamily: "var(--tl-font)",
+            fontSize: 13,
+            fontWeight: 600,
+            cursor: selectedSuggestionId === null ? "default" : "pointer",
+            opacity: selectedSuggestionId === null ? 0.4 : 1,
+          }}
+        >
+          Apply
+        </button>
+
+        {/* Mark Done button */}
+        <button
+          type="button"
+          onClick={handleDismiss}
+          style={{
+            background: "transparent",
+            border: "1px solid var(--tl-border)",
+            borderRadius: 8,
+            padding: "9px 18px",
+            fontFamily: "var(--tl-font)",
+            fontSize: 13,
+            fontWeight: 500,
+            color: "var(--tl-text-muted)",
+            cursor: "pointer",
+          }}
+        >
+          Mark Done
+        </button>
+
+        {/* Copy bullet button (only after applying) */}
+        {appliedText && (
+          <button
+            type="button"
+            onClick={handleCopy}
+            style={{
+              background: "transparent",
+              border: "1px solid var(--tl-border)",
+              borderRadius: 8,
+              padding: "9px 18px",
+              fontFamily: "var(--tl-font)",
+              fontSize: 13,
+              fontWeight: 500,
+              color: copied ? "var(--tl-low-500)" : "var(--tl-text-muted)",
+              cursor: "pointer",
+            }}
+          >
+            {copied ? "Copied!" : "Copy bullet"}
+          </button>
+        )}
+      </div>
+    </div>
+  );
+};
+
+// ── RESUME FIX WORKSPACE SECTION (demo) ──────────────────────────────────────
+const ResumeFixWorkspaceSection = () => {
+  const [tasks, setTasks] = useState(resumeFixIssues);
+
+  const handleApply = (id, text) => {
+    setTasks((prev) =>
+      prev.map((t) => (t.id === id ? { ...t, appliedText: text } : t))
+    );
+  };
+
+  const handleDismiss = (id) => {
+    setTasks((prev) =>
+      prev.map((t) => (t.id === id ? { ...t, status: "handled" } : t))
+    );
+  };
+
+  return (
+    <section id="fix-workspace" style={{ paddingBottom: 72 }}>
+      <FeatSectionTitle>Fix Task Workspace</FeatSectionTitle>
+      <FeatSectionDesc>
+        Each ResumeFixTask card turns an issue into an actionable step. Select
+        an AI rewrite option, click Apply to see a Before / After diff, or Mark
+        Done to dismiss. The Copy bullet button appears after applying.
+      </FeatSectionDesc>
+      {tasks.map((issue) => (
+        <ResumeFixTask
+          key={issue.id}
+          issue={issue}
+          onApply={handleApply}
+          onDismiss={handleDismiss}
+        />
+      ))}
+    </section>
+  );
+};
+
+// ── REMAINING PLACEHOLDER STUBS (Tasks 3+) ────────────────────────────────────
+
+const FixProgressPanel = () => (
   <div
     style={{
       background: "var(--tl-surface)",
@@ -1322,23 +1817,6 @@ const PlaceholderStub = ({ name, description }) => (
   >
     <div
       style={{
-        display: "inline-flex",
-        alignItems: "center",
-        gap: 6,
-        background: "var(--tl-brand-50)",
-        border: "1px solid var(--tl-brand-200)",
-        borderRadius: 9999,
-        padding: "3px 12px",
-        fontFamily: "var(--tl-mono)",
-        fontSize: 11,
-        color: "var(--tl-brand-600)",
-        marginBottom: 14,
-      }}
-    >
-      Coming in Task 2 / 3
-    </div>
-    <div
-      style={{
         fontFamily: "var(--tl-font)",
         fontSize: 16,
         fontWeight: 800,
@@ -1347,7 +1825,7 @@ const PlaceholderStub = ({ name, description }) => (
         marginBottom: 8,
       }}
     >
-      {name}
+      FixProgressPanel
     </div>
     <div
       style={{
@@ -1359,42 +1837,46 @@ const PlaceholderStub = ({ name, description }) => (
         margin: "0 auto",
       }}
     >
-      {description}
+      Tracks handled issues, current vs. estimated score, and export readiness.
     </div>
   </div>
 );
 
-const ResumeFixTask = () => (
-  <PlaceholderStub
-    name="ResumeFixTask"
-    description="Turns a single IssueItem into an actionable fix task with accept/reject controls, suggestion picker, and applied state tracking."
-  />
-);
-
-const RewriteSuggestion = () => (
-  <PlaceholderStub
-    name="RewriteSuggestion"
-    description="Displays an AI-generated rewrite suggestion with variant tabs (Outcome-driven, ATS-friendly), copy button, and accept action."
-  />
-);
-
-const BeforeAfterDiff = () => (
-  <PlaceholderStub
-    name="BeforeAfterDiff"
-    description="Side-by-side comparison of the original resume text and the accepted revision, with word-level diff highlighting."
-  />
-);
-
-const FixProgressPanel = () => (
-  <PlaceholderStub
-    name="FixProgressPanel"
-    description="Tracks how many issues have been handled, shows current vs. estimated score, and controls the Export Resume button readiness state."
-  />
-);
-
 const JobMatchPreview = () => (
-  <PlaceholderStub
-    name="JobMatchPreview"
-    description="Previews the future JD matching workflow — keyword overlap chart, match percentage ring, and gap analysis table."
-  />
+  <div
+    style={{
+      background: "var(--tl-surface)",
+      border: "2px dashed var(--tl-brand-300)",
+      borderRadius: 14,
+      padding: 36,
+      textAlign: "center",
+      marginTop: 24,
+    }}
+  >
+    <div
+      style={{
+        fontFamily: "var(--tl-font)",
+        fontSize: 16,
+        fontWeight: 800,
+        color: "var(--tl-brand-700)",
+        letterSpacing: "-0.01em",
+        marginBottom: 8,
+      }}
+    >
+      JobMatchPreview
+    </div>
+    <div
+      style={{
+        fontFamily: "var(--tl-font)",
+        fontSize: 13,
+        color: "var(--tl-n-500)",
+        lineHeight: 1.65,
+        maxWidth: 380,
+        margin: "0 auto",
+      }}
+    >
+      Previews the future JD matching workflow — keyword overlap chart, match
+      percentage ring, and gap analysis table.
+    </div>
+  </div>
 );

@@ -422,6 +422,12 @@
             { id: "header", label: "Page Header" },
           ],
         },
+        {
+          group: "Fix Workspace",
+          items: [
+            { id: "fix-workspace", label: "Fix Task" },
+          ],
+        },
       ];
 
       // ── SIDEBAR ───────────────────────────────────────────────────
@@ -471,6 +477,7 @@
           issues: "Issue Item",
           ats: "ATS Checks",
           header: "Page Header",
+          "fix-workspace": "Fix Task",
         };
         const group =
           NAV.find((g) => g.items.find((i) => i.id === active))?.group ||
@@ -760,6 +767,7 @@
         issues: () => <IssueSection />,
         ats: () => <ATSSection />,
         header: () => <HeaderSection />,
+        "fix-workspace": () => <ResumeFixWorkspaceSection />,
       };
 
       // ── APP ────────────────────────────────────────────────────────
