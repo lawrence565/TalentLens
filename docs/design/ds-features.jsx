@@ -1474,9 +1474,10 @@ const ResumeFixTask = ({ issue, onApply, onDismiss }) => {
   };
 
   const handleCopy = () => {
-    navigator.clipboard.writeText(appliedText);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 1500);
+    navigator.clipboard.writeText(appliedText).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1500);
+    }).catch(() => {});
   };
 
   if (done) {
@@ -1485,8 +1486,8 @@ const ResumeFixTask = ({ issue, onApply, onDismiss }) => {
         style={{
           background: "white",
           borderRadius: 12,
-          borderLeft: `4px solid ${severityColor}`,
           border: "1px solid var(--tl-border)",
+          borderLeft: `4px solid ${severityColor}`,
           padding: "16px 24px",
           boxShadow: "var(--tl-shadow-sm)",
           marginBottom: 16,
@@ -1534,8 +1535,8 @@ const ResumeFixTask = ({ issue, onApply, onDismiss }) => {
       style={{
         background: "white",
         borderRadius: 12,
-        borderLeft: `4px solid ${severityColor}`,
         border: "1px solid var(--tl-border)",
+        borderLeft: `4px solid ${severityColor}`,
         padding: "20px 24px",
         boxShadow: "var(--tl-shadow-sm)",
         marginBottom: 16,
@@ -1625,7 +1626,6 @@ const ResumeFixTask = ({ issue, onApply, onDismiss }) => {
           fontSize: 13,
           color: "var(--tl-text-muted)",
           lineHeight: 1.6,
-          marginBottom: 16,
           margin: "0 0 16px",
         }}
       >
