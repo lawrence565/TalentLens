@@ -1,0 +1,1091 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Version History · TalentLens</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&family=JetBrains+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <script
+      src="https://unpkg.com/react@18.3.1/umd/react.development.js"
+      integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js"
+      integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js"
+      integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y"
+      crossorigin="anonymous"
+    ></script>
+    <style>
+      /* ── DESIGN TOKENS ────────────────────────────────────────── */
+      :root {
+        --tl-brand-500: oklch(0.508 0.2 265);
+        --tl-brand-50: oklch(0.975 0.013 265);
+        --tl-brand-100: oklch(0.938 0.037 265);
+        --tl-brand-200: oklch(0.875 0.068 265);
+        --tl-brand-600: oklch(0.433 0.213 265);
+        --tl-brand-700: oklch(0.352 0.192 265);
+        --tl-brand-900: oklch(0.188 0.098 265);
+        --tl-high-50: oklch(0.974 0.014 18);
+        --tl-high-100: oklch(0.936 0.042 18);
+        --tl-high-500: oklch(0.562 0.208 18);
+        --tl-med-50: oklch(0.978 0.013 72);
+        --tl-med-100: oklch(0.946 0.042 72);
+        --tl-med-500: oklch(0.715 0.158 72);
+        --tl-low-50: oklch(0.974 0.014 158);
+        --tl-low-100: oklch(0.935 0.042 158);
+        --tl-low-500: oklch(0.622 0.15 158);
+        --tl-n-50: oklch(0.987 0.004 95);
+        --tl-n-100: oklch(0.962 0.007 85);
+        --tl-n-200: oklch(0.916 0.01 80);
+        --tl-n-300: oklch(0.844 0.01 75);
+        --tl-n-400: oklch(0.718 0.009 265);
+        --tl-n-500: oklch(0.583 0.01 265);
+        --tl-n-600: oklch(0.472 0.01 265);
+        --tl-n-700: oklch(0.364 0.01 265);
+        --tl-n-800: oklch(0.258 0.009 265);
+        --tl-n-900: oklch(0.174 0.008 265);
+        --tl-surface: #ffffff;
+        --tl-bg: oklch(0.987 0.004 95);
+        --tl-border: oklch(0.916 0.01 80);
+        --tl-border-strong: oklch(0.844 0.01 75);
+        --tl-text: oklch(0.174 0.008 265);
+        --tl-text-muted: oklch(0.472 0.01 265);
+        --tl-text-subtle: oklch(0.583 0.01 265);
+        --tl-font: "Plus Jakarta Sans", system-ui, sans-serif;
+        --tl-mono: "JetBrains Mono", "Fira Code", monospace;
+        --tl-shadow-sm: 0 2px 4px rgba(0,0,0,0.07), 0 1px 2px rgba(0,0,0,0.04);
+        --tl-shadow-md: 0 4px 12px rgba(0,0,0,0.09), 0 2px 4px rgba(0,0,0,0.04);
+      }
+
+      /* ── RESET + BASE ─────────────────────────────────────────── */
+      *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+      html { font-size: 16px; }
+      body {
+        font-family: var(--tl-font);
+        background: var(--tl-bg);
+        color: var(--tl-text);
+        line-height: 1.5;
+        -webkit-font-smoothing: antialiased;
+        min-height: 100vh;
+      }
+      #root { min-height: 100vh; display: flex; flex-direction: column; }
+    </style>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="text/babel">
+      const { useState, useCallback } = React;
+
+      /* ── VERSION DATA ─────────────────────────────────────────── */
+      const VERSIONS = [
+        {
+          id: "general",
+          title: "General Product Operations Resume",
+          statusType: "base",
+          score: 84,
+          lastModified: "2026-05-12",
+          relativeDate: "2 days ago",
+          openIssues: 0,
+          fixWorkspaceUrl: "./resume-fix-workspace.html",
+        },
+        {
+          id: "b2b-saas",
+          title: "Product Operations Manager · B2B SaaS",
+          statusType: "targeted",
+          score: 78,
+          lastModified: "2026-05-14",
+          relativeDate: "Today",
+          openIssues: 1,
+          fixWorkspaceUrl: "./resume-fix-workspace.html",
+        },
+        {
+          id: "fintech",
+          title: "Data Analyst · Fintech",
+          statusType: "draft",
+          score: 62,
+          lastModified: null,
+          relativeDate: null,
+          openIssues: null,
+          note: "Template in progress — resume imported, gaps not yet resolved",
+          fixWorkspaceUrl: "./resume-fix-workspace.html",
+        },
+      ];
+
+      const ACTIVITY = [
+        { when: "Yesterday", text: "Fixed 2 issues in General Resume" },
+        { when: "Today", text: "Created B2B SaaS targeted version" },
+        { when: "Today", text: "Imported Fintech resume template" },
+      ];
+
+      /* ── SCORE HELPERS ────────────────────────────────────────── */
+      function scoreColor(score) {
+        if (score >= 80) return "var(--tl-low-500)";
+        if (score >= 70) return "var(--tl-brand-500)";
+        return "var(--tl-med-500)";
+      }
+      function scoreBg(score) {
+        if (score >= 80) return "var(--tl-low-50)";
+        if (score >= 70) return "var(--tl-brand-50)";
+        return "var(--tl-med-50)";
+      }
+      function scoreBorder(score) {
+        if (score >= 80) return "var(--tl-low-100)";
+        if (score >= 70) return "var(--tl-brand-100)";
+        return "var(--tl-med-100)";
+      }
+
+      /* ── STATUS BADGE HELPERS ─────────────────────────────────── */
+      function statusLabel(type) {
+        if (type === "base") return "Base";
+        if (type === "targeted") return "Targeted";
+        return "Draft";
+      }
+      function statusBg(type) {
+        if (type === "base") return "var(--tl-n-100)";
+        if (type === "targeted") return "var(--tl-brand-50)";
+        return "var(--tl-med-50)";
+      }
+      function statusColor(type) {
+        if (type === "base") return "var(--tl-n-600)";
+        if (type === "targeted") return "var(--tl-brand-600)";
+        return "var(--tl-med-500)";
+      }
+      function statusBorderColor(type) {
+        if (type === "base") return "var(--tl-n-200)";
+        if (type === "targeted") return "var(--tl-brand-100)";
+        return "var(--tl-med-100)";
+      }
+
+      /* ── TOP NAV ──────────────────────────────────────────────── */
+      function TopNav({ onCreateVersion }) {
+        return (
+          <header style={{
+            position: "sticky",
+            top: 0,
+            zIndex: 100,
+            height: 56,
+            background: "var(--tl-surface)",
+            borderBottom: "1px solid var(--tl-border)",
+            boxShadow: "var(--tl-shadow-sm)",
+            display: "flex",
+            alignItems: "center",
+            padding: "0 24px",
+            gap: 16
+          }}>
+            {/* Logo */}
+            <div style={{ display: "flex", alignItems: "center", gap: 8, flexShrink: 0 }}>
+              <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+                <circle cx="12" cy="12" r="9" stroke="var(--tl-brand-500)" strokeWidth="2.5" fill="var(--tl-brand-50)" />
+                <circle cx="16" cy="16" r="6" stroke="var(--tl-brand-600)" strokeWidth="2" fill="none" />
+                <line x1="20.5" y1="20.5" x2="25" y2="25" stroke="var(--tl-brand-700)" strokeWidth="2.5" strokeLinecap="round" />
+              </svg>
+              <span style={{
+                fontWeight: 800,
+                fontSize: 15,
+                color: "var(--tl-brand-700)",
+                letterSpacing: "-0.3px"
+              }}>TalentLens</span>
+            </div>
+
+            {/* Breadcrumb */}
+            <nav style={{
+              flex: 1,
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              gap: 6,
+              fontSize: 13,
+              color: "var(--tl-text-muted)"
+            }}>
+              <a href="#" style={{ color: "var(--tl-brand-600)", textDecoration: "none", fontWeight: 500 }}>Dashboard</a>
+              <span style={{ color: "var(--tl-n-300)" }}>›</span>
+              <a href="#" style={{ color: "var(--tl-brand-600)", textDecoration: "none", fontWeight: 500 }}>Sarah Chen</a>
+              <span style={{ color: "var(--tl-n-300)" }}>›</span>
+              <span style={{ color: "var(--tl-text)", fontWeight: 600 }}>Version History</span>
+            </nav>
+
+            {/* Right actions */}
+            <div style={{ display: "flex", alignItems: "center", gap: 12, flexShrink: 0 }}>
+              <button
+                onClick={onCreateVersion}
+                style={{
+                  background: "var(--tl-brand-500)",
+                  color: "#fff",
+                  border: "none",
+                  borderRadius: 8,
+                  padding: "7px 16px",
+                  fontSize: 13,
+                  fontWeight: 600,
+                  fontFamily: "var(--tl-font)",
+                  cursor: "pointer",
+                  letterSpacing: "-0.1px"
+                }}
+              >
+                Create Version
+              </button>
+              <div style={{
+                width: 34,
+                height: 34,
+                borderRadius: "50%",
+                background: "var(--tl-brand-100)",
+                border: "2px solid var(--tl-brand-200)",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                fontWeight: 700,
+                fontSize: 13,
+                color: "var(--tl-brand-700)",
+                flexShrink: 0,
+                cursor: "pointer"
+              }}>
+                SC
+              </div>
+            </div>
+          </header>
+        );
+      }
+
+      /* ── VERSION CARD ─────────────────────────────────────────── */
+      function VersionCard({ version, expanded, onToggleExpand }) {
+        const isDraft = version.statusType === "draft";
+        const isBase = version.statusType === "base";
+
+        return (
+          <div style={{
+            background: "var(--tl-surface)",
+            border: "1px solid var(--tl-border)",
+            borderLeft: isDraft
+              ? "4px solid var(--tl-med-500)"
+              : isBase
+              ? "4px solid var(--tl-n-400)"
+              : "4px solid var(--tl-brand-500)",
+            borderRadius: 12,
+            boxShadow: "var(--tl-shadow-sm)",
+            overflow: "hidden"
+          }}>
+            {/* Card main row */}
+            <div style={{ padding: "16px 20px" }}>
+              <div style={{ display: "flex", alignItems: "flex-start", gap: 14 }}>
+                {/* Score badge */}
+                <div style={{
+                  flexShrink: 0,
+                  width: 48,
+                  height: 48,
+                  borderRadius: 10,
+                  background: isDraft ? "var(--tl-n-50)" : scoreBg(version.score),
+                  border: `1.5px solid ${isDraft ? "var(--tl-n-200)" : scoreBorder(version.score)}`,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  flexDirection: "column",
+                  gap: 1
+                }}>
+                  <span style={{
+                    fontSize: 18,
+                    fontWeight: 800,
+                    letterSpacing: "-0.5px",
+                    lineHeight: 1,
+                    color: isDraft ? "var(--tl-n-400)" : scoreColor(version.score)
+                  }}>
+                    {isDraft ? "—" : version.score}
+                  </span>
+                  {!isDraft && (
+                    <span style={{
+                      fontSize: 9,
+                      fontFamily: "var(--tl-mono)",
+                      color: scoreColor(version.score),
+                      letterSpacing: "0.3px",
+                      fontWeight: 600
+                    }}>
+                      /100
+                    </span>
+                  )}
+                </div>
+
+                {/* Info */}
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap", marginBottom: 4 }}>
+                    <h3 style={{ fontSize: 14, fontWeight: 700, letterSpacing: "-0.1px", color: "var(--tl-text)" }}>
+                      {version.title}
+                    </h3>
+                    {/* Status badge */}
+                    <span style={{
+                      fontSize: 10,
+                      fontFamily: "var(--tl-mono)",
+                      fontWeight: 700,
+                      letterSpacing: "0.5px",
+                      textTransform: "uppercase",
+                      background: statusBg(version.statusType),
+                      color: statusColor(version.statusType),
+                      border: `1px solid ${statusBorderColor(version.statusType)}`,
+                      borderRadius: 99,
+                      padding: "2px 8px",
+                      flexShrink: 0
+                    }}>
+                      {statusLabel(version.statusType)}
+                    </span>
+                  </div>
+
+                  <div style={{ display: "flex", alignItems: "center", gap: 16, flexWrap: "wrap" }}>
+                    {version.lastModified ? (
+                      <span style={{ fontSize: 12, color: "var(--tl-text-subtle)", fontFamily: "var(--tl-mono)" }}>
+                        {version.lastModified} · {version.relativeDate}
+                      </span>
+                    ) : (
+                      <span style={{ fontSize: 12, color: "var(--tl-n-400)", fontFamily: "var(--tl-mono)" }}>
+                        Not modified yet
+                      </span>
+                    )}
+
+                    {version.openIssues !== null && (
+                      <span style={{
+                        fontSize: 12,
+                        color: version.openIssues > 0 ? "var(--tl-med-500)" : "var(--tl-low-500)",
+                        fontWeight: 500
+                      }}>
+                        {version.openIssues === 0
+                          ? "No open issues"
+                          : `${version.openIssues} open issue`}
+                      </span>
+                    )}
+                  </div>
+
+                  {version.note && (
+                    <p style={{
+                      marginTop: 6,
+                      fontSize: 12,
+                      color: "var(--tl-text-subtle)",
+                      fontStyle: "italic",
+                      lineHeight: 1.5
+                    }}>
+                      {version.note}
+                    </p>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            {/* Action row */}
+            <div style={{
+              borderTop: "1px solid var(--tl-border)",
+              padding: "10px 20px",
+              display: "flex",
+              alignItems: "center",
+              gap: 8,
+              background: "var(--tl-n-50)",
+              flexWrap: "wrap"
+            }}>
+              {isDraft ? (
+                <a
+                  href={version.fixWorkspaceUrl}
+                  style={{
+                    background: "var(--tl-n-200)",
+                    color: "var(--tl-text-muted)",
+                    border: "none",
+                    borderRadius: 7,
+                    padding: "6px 14px",
+                    fontSize: 12,
+                    fontWeight: 600,
+                    fontFamily: "var(--tl-font)",
+                    cursor: "pointer",
+                    textDecoration: "none",
+                    display: "inline-block"
+                  }}
+                >
+                  Complete this version
+                </a>
+              ) : (
+                <>
+                  <a
+                    href={version.fixWorkspaceUrl}
+                    style={{
+                      background: "var(--tl-brand-500)",
+                      color: "#fff",
+                      border: "none",
+                      borderRadius: 7,
+                      padding: "6px 14px",
+                      fontSize: 12,
+                      fontWeight: 600,
+                      fontFamily: "var(--tl-font)",
+                      cursor: "pointer",
+                      textDecoration: "none",
+                      display: "inline-block"
+                    }}
+                  >
+                    Open in Fix Workspace
+                  </a>
+                  <button
+                    onClick={onToggleExpand}
+                    style={{
+                      background: "none",
+                      color: "var(--tl-brand-600)",
+                      border: "1px solid var(--tl-brand-200)",
+                      borderRadius: 7,
+                      padding: "6px 14px",
+                      fontSize: 12,
+                      fontWeight: 600,
+                      fontFamily: "var(--tl-font)",
+                      cursor: "pointer"
+                    }}
+                  >
+                    {expanded ? "Hide details" : "View"}
+                  </button>
+                  {!isBase && (
+                    <button
+                      style={{
+                        background: "none",
+                        color: "var(--tl-text-subtle)",
+                        border: "1px solid var(--tl-border)",
+                        borderRadius: 7,
+                        padding: "6px 14px",
+                        fontSize: 12,
+                        fontWeight: 600,
+                        fontFamily: "var(--tl-font)",
+                        cursor: "pointer"
+                      }}
+                    >
+                      Set as Base
+                    </button>
+                  )}
+                </>
+              )}
+            </div>
+
+            {/* Expanded details pane */}
+            {expanded && !isDraft && (
+              <div style={{
+                borderTop: "1px solid var(--tl-border)",
+                padding: "14px 20px",
+                background: "var(--tl-brand-50)"
+              }}>
+                <p style={{
+                  fontSize: 11,
+                  fontFamily: "var(--tl-mono)",
+                  fontWeight: 600,
+                  textTransform: "uppercase",
+                  letterSpacing: "0.5px",
+                  color: "var(--tl-brand-600)",
+                  marginBottom: 8
+                }}>
+                  Version details
+                </p>
+                <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+                  <div style={{ display: "flex", gap: 12, fontSize: 13 }}>
+                    <span style={{ color: "var(--tl-text-subtle)", minWidth: 100 }}>Score</span>
+                    <span style={{ color: scoreColor(version.score), fontWeight: 700 }}>{version.score}/100</span>
+                  </div>
+                  <div style={{ display: "flex", gap: 12, fontSize: 13 }}>
+                    <span style={{ color: "var(--tl-text-subtle)", minWidth: 100 }}>Status</span>
+                    <span style={{ color: "var(--tl-text-muted)", fontWeight: 500 }}>{statusLabel(version.statusType)}</span>
+                  </div>
+                  {version.lastModified && (
+                    <div style={{ display: "flex", gap: 12, fontSize: 13 }}>
+                      <span style={{ color: "var(--tl-text-subtle)", minWidth: 100 }}>Last saved</span>
+                      <span style={{ color: "var(--tl-text-muted)" }}>{version.lastModified}</span>
+                    </div>
+                  )}
+                  <div style={{ display: "flex", gap: 12, fontSize: 13 }}>
+                    <span style={{ color: "var(--tl-text-subtle)", minWidth: 100 }}>Open issues</span>
+                    <span style={{
+                      color: version.openIssues === 0 ? "var(--tl-low-500)" : "var(--tl-med-500)",
+                      fontWeight: 500
+                    }}>
+                      {version.openIssues === 0 ? "None — all resolved" : `${version.openIssues} remaining`}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+        );
+      }
+
+      /* ── VERSION COMPARISON ───────────────────────────────────── */
+      function VersionComparison() {
+        return (
+          <div style={{
+            background: "var(--tl-surface)",
+            border: "1px solid var(--tl-border)",
+            borderRadius: 12,
+            overflow: "hidden",
+            boxShadow: "var(--tl-shadow-sm)"
+          }}>
+            {/* Header */}
+            <div style={{
+              padding: "14px 20px",
+              borderBottom: "1px solid var(--tl-border)",
+              background: "var(--tl-n-50)"
+            }}>
+              <p style={{
+                fontSize: 10,
+                fontFamily: "var(--tl-mono)",
+                fontWeight: 700,
+                textTransform: "uppercase",
+                letterSpacing: "0.8px",
+                color: "var(--tl-n-500)"
+              }}>
+                Comparing Versions
+              </p>
+            </div>
+
+            {/* Two-column diff */}
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr" }}>
+              {/* Before — General Resume */}
+              <div style={{
+                padding: "16px 20px",
+                borderRight: "1px solid var(--tl-border)",
+                background: "var(--tl-high-50)"
+              }}>
+                <p style={{
+                  fontSize: 10,
+                  fontFamily: "var(--tl-mono)",
+                  fontWeight: 700,
+                  textTransform: "uppercase",
+                  letterSpacing: "0.5px",
+                  color: "var(--tl-high-500)",
+                  marginBottom: 8
+                }}>
+                  Before · General Resume
+                </p>
+                <p style={{
+                  fontSize: 13,
+                  color: "var(--tl-text-muted)",
+                  lineHeight: 1.6,
+                  textDecoration: "line-through",
+                  marginBottom: 12
+                }}>
+                  Managed weekly support operations and helped improve team workflow.
+                </p>
+                <div style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: 6,
+                  background: "var(--tl-n-100)",
+                  border: "1px solid var(--tl-n-200)",
+                  borderRadius: 6,
+                  padding: "4px 10px",
+                  fontSize: 12,
+                  fontFamily: "var(--tl-mono)",
+                  fontWeight: 600,
+                  color: "var(--tl-text-subtle)"
+                }}>
+                  Score: 72 → 84
+                </div>
+              </div>
+
+              {/* After — B2B SaaS */}
+              <div style={{
+                padding: "16px 20px",
+                background: "var(--tl-low-50)"
+              }}>
+                <p style={{
+                  fontSize: 10,
+                  fontFamily: "var(--tl-mono)",
+                  fontWeight: 700,
+                  textTransform: "uppercase",
+                  letterSpacing: "0.5px",
+                  color: "var(--tl-low-500)",
+                  marginBottom: 8
+                }}>
+                  After · B2B SaaS Version
+                </p>
+                <p style={{
+                  fontSize: 13,
+                  color: "var(--tl-text)",
+                  lineHeight: 1.6,
+                  fontWeight: 500,
+                  marginBottom: 12
+                }}>
+                  Led weekly support operations for a 9-person team, reducing unresolved ticket backlog by 23% over one quarter.
+                </p>
+                <div style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: 6,
+                  background: "var(--tl-brand-50)",
+                  border: "1px solid var(--tl-brand-100)",
+                  borderRadius: 6,
+                  padding: "4px 10px",
+                  fontSize: 12,
+                  fontFamily: "var(--tl-mono)",
+                  fontWeight: 600,
+                  color: "var(--tl-brand-600)"
+                }}>
+                  Score: 84 → 78 (targeted)
+                </div>
+              </div>
+            </div>
+
+            {/* Footer label */}
+            <div style={{
+              padding: "10px 20px",
+              borderTop: "1px solid var(--tl-border)",
+              background: "var(--tl-n-50)"
+            }}>
+              <p style={{
+                fontSize: 12,
+                color: "var(--tl-text-subtle)",
+                fontFamily: "var(--tl-mono)"
+              }}>
+                Comparing General Resume → B2B SaaS version · Score change: +12 pts after fixes, −6 pts for targeted gap
+              </p>
+            </div>
+          </div>
+        );
+      }
+
+      /* ── MUTED CALLOUT ────────────────────────────────────────── */
+      function MutedCallout() {
+        return (
+          <div style={{
+            background: "var(--tl-n-50)",
+            border: "1px solid var(--tl-border)",
+            borderRadius: 10,
+            padding: "14px 18px",
+            textAlign: "center"
+          }}>
+            <p style={{
+              fontFamily: "var(--tl-font)",
+              fontSize: 13,
+              color: "var(--tl-text-subtle)",
+              fontStyle: "italic",
+              lineHeight: 1.6
+            }}>
+              Create a targeted version from Job Match Mode when you are ready to tailor this resume.
+            </p>
+          </div>
+        );
+      }
+
+      /* ── SCORE BAR ROW ────────────────────────────────────────── */
+      function ScoreBarRow({ label, score, maxScore }) {
+        const pct = Math.round((score / maxScore) * 100);
+        return (
+          <div style={{ marginBottom: 10 }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 4 }}>
+              <span style={{ fontSize: 12, color: "var(--tl-text-muted)", fontWeight: 500 }}>{label}</span>
+              <span style={{
+                fontSize: 12,
+                fontWeight: 700,
+                fontFamily: "var(--tl-mono)",
+                color: scoreColor(score)
+              }}>
+                {score}
+              </span>
+            </div>
+            <div style={{
+              height: 6,
+              background: "var(--tl-n-200)",
+              borderRadius: 99,
+              overflow: "hidden"
+            }}>
+              <div style={{
+                height: "100%",
+                width: `${pct}%`,
+                background: scoreColor(score),
+                borderRadius: 99,
+                transition: "width 0.5s ease"
+              }} />
+            </div>
+          </div>
+        );
+      }
+
+      /* ── QUICK STATS SIDEBAR ──────────────────────────────────── */
+      function QuickStatsSidebar() {
+        return (
+          <aside style={{ width: 300, flexShrink: 0 }}>
+            {/* Stats card */}
+            <div style={{
+              position: "sticky",
+              top: 72,
+              display: "flex",
+              flexDirection: "column",
+              gap: 16
+            }}>
+              <div style={{
+                background: "var(--tl-surface)",
+                border: "1px solid var(--tl-border)",
+                borderRadius: 12,
+                padding: "20px",
+                boxShadow: "var(--tl-shadow-sm)"
+              }}>
+                <p style={{
+                  fontSize: 10,
+                  fontFamily: "var(--tl-mono)",
+                  fontWeight: 700,
+                  textTransform: "uppercase",
+                  letterSpacing: "0.8px",
+                  color: "var(--tl-n-500)",
+                  marginBottom: 14
+                }}>
+                  Resume Versions
+                </p>
+
+                {/* Version counts */}
+                <div style={{
+                  display: "grid",
+                  gridTemplateColumns: "1fr 1fr 1fr",
+                  gap: 8,
+                  marginBottom: 18
+                }}>
+                  {[
+                    { label: "Total", value: 3, color: "var(--tl-text)" },
+                    { label: "Targeted", value: 2, color: "var(--tl-brand-500)" },
+                    { label: "Base", value: 1, color: "var(--tl-n-600)" }
+                  ].map(s => (
+                    <div key={s.label} style={{
+                      textAlign: "center",
+                      background: "var(--tl-n-50)",
+                      borderRadius: 8,
+                      padding: "10px 6px"
+                    }}>
+                      <div style={{
+                        fontSize: 22,
+                        fontWeight: 800,
+                        color: s.color,
+                        letterSpacing: "-0.5px",
+                        lineHeight: 1
+                      }}>
+                        {s.value}
+                      </div>
+                      <div style={{
+                        fontSize: 10,
+                        color: "var(--tl-text-subtle)",
+                        marginTop: 3,
+                        fontFamily: "var(--tl-mono)",
+                        letterSpacing: "0.3px"
+                      }}>
+                        {s.label}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Summary stats */}
+                <div style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: 8,
+                  paddingTop: 14,
+                  borderTop: "1px solid var(--tl-border)",
+                  marginBottom: 18
+                }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", fontSize: 13 }}>
+                    <span style={{ color: "var(--tl-text-muted)" }}>Highest score</span>
+                    <span style={{ fontWeight: 700, color: "var(--tl-low-500)" }}>84 — General</span>
+                  </div>
+                  <div style={{ display: "flex", justifyContent: "space-between", fontSize: 13 }}>
+                    <span style={{ color: "var(--tl-text-muted)" }}>Average score</span>
+                    <span style={{ fontWeight: 700, color: "var(--tl-text)" }}>75</span>
+                  </div>
+                </div>
+
+                {/* Score trend bars */}
+                <p style={{
+                  fontSize: 10,
+                  fontFamily: "var(--tl-mono)",
+                  fontWeight: 600,
+                  textTransform: "uppercase",
+                  letterSpacing: "0.5px",
+                  color: "var(--tl-n-400)",
+                  marginBottom: 10
+                }}>
+                  Score Trend
+                </p>
+                <ScoreBarRow label="General" score={84} maxScore={100} />
+                <ScoreBarRow label="B2B SaaS" score={78} maxScore={100} />
+                <ScoreBarRow label="Fintech" score={62} maxScore={100} />
+              </div>
+
+              {/* Activity feed */}
+              <div style={{
+                background: "var(--tl-surface)",
+                border: "1px solid var(--tl-border)",
+                borderRadius: 12,
+                padding: "20px",
+                boxShadow: "var(--tl-shadow-sm)"
+              }}>
+                <p style={{
+                  fontSize: 10,
+                  fontFamily: "var(--tl-mono)",
+                  fontWeight: 700,
+                  textTransform: "uppercase",
+                  letterSpacing: "0.8px",
+                  color: "var(--tl-n-500)",
+                  marginBottom: 14
+                }}>
+                  Recent Activity
+                </p>
+                <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+                  {ACTIVITY.map((item, i) => (
+                    <div key={i} style={{ display: "flex", gap: 10, alignItems: "flex-start" }}>
+                      <div style={{
+                        width: 6,
+                        height: 6,
+                        borderRadius: "50%",
+                        background: "var(--tl-brand-500)",
+                        flexShrink: 0,
+                        marginTop: 6
+                      }} />
+                      <div>
+                        <p style={{
+                          fontSize: 11,
+                          fontFamily: "var(--tl-mono)",
+                          color: "var(--tl-n-400)",
+                          fontWeight: 600,
+                          marginBottom: 1
+                        }}>
+                          {item.when}
+                        </p>
+                        <p style={{
+                          fontSize: 13,
+                          color: "var(--tl-text-muted)",
+                          lineHeight: 1.4
+                        }}>
+                          {item.text}
+                        </p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </aside>
+        );
+      }
+
+      /* ── CREATE VERSION MODAL ─────────────────────────────────── */
+      function CreateVersionModal({ onClose }) {
+        const [name, setName] = useState("");
+
+        return (
+          <div style={{
+            position: "fixed",
+            inset: 0,
+            background: "rgba(0,0,0,0.4)",
+            zIndex: 1000,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            padding: 24
+          }}>
+            <div style={{
+              background: "var(--tl-surface)",
+              borderRadius: 16,
+              padding: "28px 32px",
+              maxWidth: 440,
+              width: "100%",
+              boxShadow: "var(--tl-shadow-md)"
+            }}>
+              <h2 style={{
+                fontSize: 17,
+                fontWeight: 800,
+                letterSpacing: "-0.3px",
+                marginBottom: 6
+              }}>
+                Create a new version
+              </h2>
+              <p style={{
+                fontSize: 13,
+                color: "var(--tl-text-muted)",
+                marginBottom: 20,
+                lineHeight: 1.55
+              }}>
+                Give this version a name that reflects the role or company you are targeting.
+              </p>
+
+              <label style={{
+                display: "block",
+                fontSize: 12,
+                fontWeight: 600,
+                color: "var(--tl-text-muted)",
+                marginBottom: 6
+              }}>
+                Version name
+              </label>
+              <input
+                type="text"
+                placeholder="e.g. Product Manager · Series B Startup"
+                value={name}
+                onChange={e => setName(e.target.value)}
+                style={{
+                  width: "100%",
+                  border: "1.5px solid var(--tl-border-strong)",
+                  borderRadius: 8,
+                  padding: "9px 12px",
+                  fontSize: 14,
+                  fontFamily: "var(--tl-font)",
+                  color: "var(--tl-text)",
+                  background: "var(--tl-surface)",
+                  outline: "none",
+                  marginBottom: 20
+                }}
+              />
+
+              <div style={{ display: "flex", gap: 10, justifyContent: "flex-end" }}>
+                <button
+                  onClick={onClose}
+                  style={{
+                    background: "none",
+                    color: "var(--tl-text-muted)",
+                    border: "1px solid var(--tl-border)",
+                    borderRadius: 8,
+                    padding: "8px 18px",
+                    fontSize: 13,
+                    fontWeight: 600,
+                    fontFamily: "var(--tl-font)",
+                    cursor: "pointer"
+                  }}
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={onClose}
+                  style={{
+                    background: name.trim() ? "var(--tl-brand-500)" : "var(--tl-n-200)",
+                    color: name.trim() ? "#fff" : "var(--tl-n-400)",
+                    border: "none",
+                    borderRadius: 8,
+                    padding: "8px 18px",
+                    fontSize: 13,
+                    fontWeight: 600,
+                    fontFamily: "var(--tl-font)",
+                    cursor: name.trim() ? "pointer" : "not-allowed",
+                    transition: "background 0.15s ease, color 0.15s ease"
+                  }}
+                >
+                  Create version
+                </button>
+              </div>
+            </div>
+          </div>
+        );
+      }
+
+      /* ── MAIN APP ─────────────────────────────────────────────── */
+      function App() {
+        const [expandedId, setExpandedId] = useState(null);
+        const [showModal, setShowModal] = useState(false);
+
+        function toggleExpand(id) {
+          setExpandedId(prev => prev === id ? null : id);
+        }
+
+        return (
+          <>
+            <TopNav onCreateVersion={() => setShowModal(true)} />
+
+            <main style={{
+              maxWidth: 1120,
+              margin: "0 auto",
+              padding: "28px 24px 80px",
+              display: "flex",
+              flexDirection: "column",
+              gap: 0
+            }}>
+              {/* Page title */}
+              <div style={{ marginBottom: 24 }}>
+                <h1 style={{ fontSize: 20, fontWeight: 800, letterSpacing: "-0.4px", marginBottom: 2 }}>
+                  Version History
+                </h1>
+                <p style={{ fontSize: 13, color: "var(--tl-text-muted)" }}>
+                  Sarah Chen · 3 resume versions
+                </p>
+              </div>
+
+              {/* Two-column layout */}
+              <div id="main-columns" style={{
+                display: "flex",
+                gap: 24,
+                alignItems: "flex-start"
+              }}>
+                {/* Left column */}
+                <div style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column", gap: 16 }}>
+
+                  {/* Section label */}
+                  <p style={{
+                    fontSize: 10,
+                    fontFamily: "var(--tl-mono)",
+                    fontWeight: 600,
+                    textTransform: "uppercase",
+                    letterSpacing: "1px",
+                    color: "var(--tl-n-400)",
+                    marginBottom: 4
+                  }}>
+                    All Versions
+                  </p>
+
+                  {/* Version cards */}
+                  {VERSIONS.map(v => (
+                    <VersionCard
+                      key={v.id}
+                      version={v}
+                      expanded={expandedId === v.id}
+                      onToggleExpand={() => toggleExpand(v.id)}
+                    />
+                  ))}
+
+                  {/* Comparison panel */}
+                  <div style={{ marginTop: 8 }}>
+                    <p style={{
+                      fontSize: 10,
+                      fontFamily: "var(--tl-mono)",
+                      fontWeight: 600,
+                      textTransform: "uppercase",
+                      letterSpacing: "1px",
+                      color: "var(--tl-n-400)",
+                      marginBottom: 12
+                    }}>
+                      Before / After Comparison
+                    </p>
+                    <VersionComparison />
+                  </div>
+
+                  {/* Muted callout */}
+                  <MutedCallout />
+                </div>
+
+                {/* Right column */}
+                <QuickStatsSidebar />
+              </div>
+            </main>
+
+            {/* Responsive styles */}
+            <style>{`
+              @media (max-width: 900px) {
+                #main-columns {
+                  flex-direction: column !important;
+                }
+                #main-columns > aside {
+                  width: 100% !important;
+                  order: -1;
+                }
+                #main-columns > aside > div {
+                  position: static !important;
+                }
+              }
+            `}</style>
+
+            {showModal && (
+              <CreateVersionModal onClose={() => setShowModal(false)} />
+            )}
+          </>
+        );
+      }
+
+      const root = ReactDOM.createRoot(document.getElementById("root"));
+      root.render(<App />);
+    </script>
+  </body>
+</html>

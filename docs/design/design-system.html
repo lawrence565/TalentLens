@@ -40,8 +40,8 @@
         --tl-brand-900: oklch(0.188 0.098 265);
 
         --tl-accent-50: oklch(0.974 0.014 192);
-        --tl-accent-100: oklch(0.934 0.04 192)
-          --tl-accent-300: oklch(0.762 0.112 192);
+        --tl-accent-100: oklch(0.934 0.04 192);
+        --tl-accent-300: oklch(0.762 0.112 192);
         --tl-accent-500: oklch(0.613 0.153 192);
         --tl-accent-600: oklch(0.514 0.153 192);
         --tl-accent-700: oklch(0.418 0.128 192);
@@ -422,6 +422,13 @@
             { id: "header", label: "Page Header" },
           ],
         },
+        {
+          group: "Fix Workspace",
+          items: [
+            { id: "fix-workspace", label: "Fix Task" },
+            { id: "progress-panel", label: "Progress Panel" },
+          ],
+        },
       ];
 
       // ── SIDEBAR ───────────────────────────────────────────────────
@@ -471,6 +478,8 @@
           issues: "Issue Item",
           ats: "ATS Checks",
           header: "Page Header",
+          "fix-workspace": "Fix Task",
+          "progress-panel": "Progress Panel",
         };
         const group =
           NAV.find((g) => g.items.find((i) => i.id === active))?.group ||
@@ -746,20 +755,22 @@
 
       // ── SECTION ROUTER ────────────────────────────────────────────
       const SECTION_MAP = {
-        intro: <IntroSection />,
-        brand: <BrandSection />,
-        colors: <ColorSection />,
-        typography: <TypographySection />,
-        spacing: <SpacingSection />,
-        buttons: <ButtonSection />,
-        badges: <BadgeSection />,
-        cards: <CardSection />,
-        inputs: <InputSection />,
-        score: <ScoreSection />,
-        upload: <UploadSection_ />,
-        issues: <IssueSection />,
-        ats: <ATSSection />,
-        header: <HeaderSection />,
+        intro: () => <IntroSection />,
+        brand: () => <BrandSection />,
+        colors: () => <ColorSection />,
+        typography: () => <TypographySection />,
+        spacing: () => <SpacingSection />,
+        buttons: () => <ButtonSection />,
+        badges: () => <BadgeSection />,
+        cards: () => <CardSection />,
+        inputs: () => <InputSection />,
+        score: () => <ScoreSection />,
+        upload: () => <UploadSection />,
+        issues: () => <IssueSection />,
+        ats: () => <ATSSection />,
+        header: () => <HeaderSection />,
+        "fix-workspace": () => <ResumeFixWorkspaceSection />,
+        "progress-panel": () => <ProgressPanelSection />,
       };
 
       // ── APP ────────────────────────────────────────────────────────
@@ -779,7 +790,7 @@
             <div id="ds-main">
               <Topbar active={active} />
               <div id="ds-content" key={key}>
-                {SECTION_MAP[active] || <IntroSection />}
+                {(SECTION_MAP[active] || (() => <IntroSection />))()}
               </div>
             </div>
           </div>

@@ -1,0 +1,921 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Job Match Mode · TalentLens</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&family=JetBrains+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <script
+      src="https://unpkg.com/react@18.3.1/umd/react.development.js"
+      integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js"
+      integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js"
+      integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y"
+      crossorigin="anonymous"
+    ></script>
+    <style>
+      /* ── DESIGN TOKENS ────────────────────────────────────────── */
+      :root {
+        --tl-brand-500: oklch(0.508 0.2 265);
+        --tl-brand-50: oklch(0.975 0.013 265);
+        --tl-brand-100: oklch(0.938 0.037 265);
+        --tl-brand-200: oklch(0.875 0.068 265);
+        --tl-brand-600: oklch(0.433 0.213 265);
+        --tl-brand-700: oklch(0.352 0.192 265);
+        --tl-brand-900: oklch(0.188 0.098 265);
+        --tl-high-50: oklch(0.974 0.014 18);
+        --tl-high-100: oklch(0.936 0.042 18);
+        --tl-high-500: oklch(0.562 0.208 18);
+        --tl-med-50: oklch(0.978 0.013 72);
+        --tl-med-100: oklch(0.946 0.042 72);
+        --tl-med-500: oklch(0.715 0.158 72);
+        --tl-low-50: oklch(0.974 0.014 158);
+        --tl-low-100: oklch(0.935 0.042 158);
+        --tl-low-500: oklch(0.622 0.15 158);
+        --tl-n-50: oklch(0.987 0.004 95);
+        --tl-n-100: oklch(0.962 0.007 85);
+        --tl-n-200: oklch(0.916 0.01 80);
+        --tl-n-300: oklch(0.844 0.01 75);
+        --tl-n-400: oklch(0.718 0.009 265);
+        --tl-n-500: oklch(0.583 0.01 265);
+        --tl-n-600: oklch(0.472 0.01 265);
+        --tl-n-700: oklch(0.364 0.01 265);
+        --tl-n-800: oklch(0.258 0.009 265);
+        --tl-n-900: oklch(0.174 0.008 265);
+        --tl-surface: #ffffff;
+        --tl-bg: oklch(0.987 0.004 95);
+        --tl-border: oklch(0.916 0.01 80);
+        --tl-border-strong: oklch(0.844 0.01 75);
+        --tl-text: oklch(0.174 0.008 265);
+        --tl-text-muted: oklch(0.472 0.01 265);
+        --tl-text-subtle: oklch(0.583 0.01 265);
+        --tl-font: "Plus Jakarta Sans", system-ui, sans-serif;
+        --tl-mono: "JetBrains Mono", "Fira Code", monospace;
+        --tl-shadow-sm: 0 2px 4px rgba(0,0,0,0.07), 0 1px 2px rgba(0,0,0,0.04);
+        --tl-shadow-md: 0 4px 12px rgba(0,0,0,0.09), 0 2px 4px rgba(0,0,0,0.04);
+      }
+
+      /* ── RESET + BASE ─────────────────────────────────────────── */
+      *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+      html { font-size: 16px; }
+      body {
+        font-family: var(--tl-font);
+        background: var(--tl-bg);
+        color: var(--tl-text);
+        line-height: 1.5;
+        -webkit-font-smoothing: antialiased;
+        min-height: 100vh;
+      }
+      #root { min-height: 100vh; display: flex; flex-direction: column; }
+    </style>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="text/babel">
+      const { useState, useRef } = React;
+
+      const SAMPLE_JD = `Senior Product Operations Manager — B2B SaaS
+
+We are looking for an experienced product operations manager to support our product team. You will own the OKR tracking process, work with go-to-market teams, manage Agile delivery ceremonies, and build customer success dashboards. Strong data analysis skills required. Experience with Jira, Looker, or similar tooling preferred.`;
+
+      const MISSING_KEYWORDS = [
+        "Agile / Scrum",
+        "OKRs",
+        "Product roadmap",
+        "Go-to-market",
+        "Customer success",
+      ];
+
+      const ALIGNMENT_ITEMS = [
+        { icon: "✓", label: "Operations & process improvement", status: "pass", note: null },
+        { icon: "✓", label: "Cross-functional collaboration",   status: "pass", note: null },
+        { icon: "△", label: "Product roadmap ownership",        status: "partial", note: "Partial match" },
+        { icon: "✗", label: "Data analysis & metrics",          status: "fail", note: "Not found" },
+      ];
+
+      /* ── SVG SCORE RING ───────────────────────────────────────── */
+      function ScoreRing({ score, size = 80, strokeWidth = 7, color = "var(--tl-brand-500)" }) {
+        const r = (size - strokeWidth * 2) / 2;
+        const circumference = 2 * Math.PI * r;
+        const dashOffset = circumference * (1 - score / 100);
+        const cx = size / 2;
+        const cy = size / 2;
+
+        return (
+          <svg width={size} height={size} style={{ flexShrink: 0 }}>
+            <circle
+              cx={cx} cy={cy} r={r}
+              fill="none"
+              stroke="var(--tl-n-200)"
+              strokeWidth={strokeWidth}
+            />
+            <circle
+              cx={cx} cy={cy} r={r}
+              fill="none"
+              stroke={color}
+              strokeWidth={strokeWidth}
+              strokeDasharray={circumference}
+              strokeDashoffset={dashOffset}
+              strokeLinecap="round"
+              transform={`rotate(-90 ${cx} ${cy})`}
+              style={{ transition: "stroke-dashoffset 0.6s ease" }}
+            />
+            <text
+              x={cx} y={cy}
+              textAnchor="middle"
+              dominantBaseline="central"
+              style={{
+                fontFamily: "var(--tl-font)",
+                fontWeight: 700,
+                fontSize: size * 0.22,
+                fill: "var(--tl-text)"
+              }}
+            >
+              {score}%
+            </text>
+          </svg>
+        );
+      }
+
+      /* ── TOP NAV ──────────────────────────────────────────────── */
+      function TopNav() {
+        return (
+          <header style={{
+            position: "sticky",
+            top: 0,
+            zIndex: 100,
+            height: 56,
+            background: "var(--tl-surface)",
+            borderBottom: "1px solid var(--tl-border)",
+            boxShadow: "var(--tl-shadow-sm)",
+            display: "flex",
+            alignItems: "center",
+            padding: "0 24px",
+            gap: 16
+          }}>
+            {/* Logo */}
+            <div style={{ display: "flex", alignItems: "center", gap: 8, flexShrink: 0 }}>
+              <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+                <circle cx="12" cy="12" r="9" stroke="var(--tl-brand-500)" strokeWidth="2.5" fill="var(--tl-brand-50)" />
+                <circle cx="16" cy="16" r="6" stroke="var(--tl-brand-600)" strokeWidth="2" fill="none" />
+                <line x1="20.5" y1="20.5" x2="25" y2="25" stroke="var(--tl-brand-700)" strokeWidth="2.5" strokeLinecap="round" />
+              </svg>
+              <span style={{
+                fontWeight: 800,
+                fontSize: 15,
+                color: "var(--tl-brand-700)",
+                letterSpacing: "-0.3px"
+              }}>TalentLens</span>
+            </div>
+
+            {/* Breadcrumb */}
+            <nav style={{
+              flex: 1,
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              gap: 6,
+              fontSize: 13,
+              color: "var(--tl-text-muted)"
+            }}>
+              <a href="#" style={{ color: "var(--tl-brand-600)", textDecoration: "none", fontWeight: 500 }}>Dashboard</a>
+              <span style={{ color: "var(--tl-n-300)" }}>›</span>
+              <a href="#" style={{ color: "var(--tl-brand-600)", textDecoration: "none", fontWeight: 500 }}>Sarah Chen</a>
+              <span style={{ color: "var(--tl-n-300)" }}>›</span>
+              <span style={{ color: "var(--tl-text)", fontWeight: 600 }}>Job Match Mode</span>
+            </nav>
+
+            {/* Right actions */}
+            <div style={{ display: "flex", alignItems: "center", gap: 12, flexShrink: 0 }}>
+              <button style={{
+                background: "var(--tl-brand-500)",
+                color: "#fff",
+                border: "none",
+                borderRadius: 8,
+                padding: "7px 16px",
+                fontSize: 13,
+                fontWeight: 600,
+                fontFamily: "var(--tl-font)",
+                cursor: "pointer",
+                letterSpacing: "-0.1px"
+              }}>
+                Save Version
+              </button>
+              <div style={{
+                width: 34,
+                height: 34,
+                borderRadius: "50%",
+                background: "var(--tl-brand-100)",
+                border: "2px solid var(--tl-brand-200)",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                fontWeight: 700,
+                fontSize: 13,
+                color: "var(--tl-brand-700)",
+                flexShrink: 0,
+                cursor: "pointer"
+              }}>
+                SC
+              </div>
+            </div>
+          </header>
+        );
+      }
+
+      /* ── LEFT PANEL: INPUT STATE ──────────────────────────────── */
+      function JDInputPanel({ jdText, setJdText, onAnalyze }) {
+        const isEmpty = jdText.trim().length === 0;
+
+        return (
+          <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+            <div>
+              <h2 style={{ fontSize: 20, fontWeight: 800, letterSpacing: "-0.4px", marginBottom: 6 }}>
+                Paste a Job Description
+              </h2>
+              <p style={{ fontSize: 13, color: "var(--tl-text-muted)", lineHeight: 1.6 }}>
+                TalentLens will analyze keyword gaps, experience alignment, and suggest a targeted resume version.
+              </p>
+            </div>
+
+            <textarea
+              value={jdText}
+              onChange={e => setJdText(e.target.value)}
+              placeholder="Paste the full job description here…"
+              style={{
+                width: "100%",
+                minHeight: 220,
+                border: "1px solid var(--tl-border)",
+                borderRadius: 10,
+                padding: 16,
+                fontFamily: "var(--tl-font)",
+                fontSize: 14,
+                lineHeight: 1.6,
+                color: "var(--tl-text)",
+                background: "var(--tl-surface)",
+                resize: "vertical",
+                outline: "none",
+                transition: "border-color 0.15s ease"
+              }}
+              onFocus={e => { e.target.style.borderColor = "var(--tl-brand-500)"; }}
+              onBlur={e => { e.target.style.borderColor = "var(--tl-border)"; }}
+            />
+
+            <button
+              onClick={onAnalyze}
+              disabled={isEmpty}
+              style={{
+                width: "100%",
+                height: 44,
+                background: isEmpty ? "var(--tl-n-200)" : "var(--tl-brand-500)",
+                color: isEmpty ? "var(--tl-n-400)" : "#fff",
+                border: "none",
+                borderRadius: 9,
+                fontSize: 15,
+                fontWeight: 600,
+                fontFamily: "var(--tl-font)",
+                cursor: isEmpty ? "not-allowed" : "pointer",
+                transition: "background 0.15s ease, color 0.15s ease",
+                letterSpacing: "-0.1px"
+              }}
+            >
+              Analyze Match
+            </button>
+          </div>
+        );
+      }
+
+      /* ── LEFT PANEL: ANALYSIS RESULTS ────────────────────────── */
+      function AnalysisResults({ versionName, setVersionName, onClear }) {
+        return (
+          <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
+            {/* Header row */}
+            <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 12 }}>
+              <div>
+                <h2 style={{ fontSize: 20, fontWeight: 800, letterSpacing: "-0.4px", marginBottom: 4 }}>
+                  Match Analysis
+                </h2>
+                <p style={{ fontSize: 13, color: "var(--tl-text-muted)" }}>
+                  Senior Product Operations Manager — B2B SaaS
+                </p>
+              </div>
+              <button
+                onClick={onClear}
+                style={{
+                  background: "none",
+                  border: "1px solid var(--tl-border)",
+                  borderRadius: 6,
+                  padding: "4px 10px",
+                  fontSize: 12,
+                  fontWeight: 600,
+                  color: "var(--tl-text-muted)",
+                  fontFamily: "var(--tl-font)",
+                  cursor: "pointer",
+                  flexShrink: 0,
+                  marginTop: 2
+                }}
+              >
+                × Clear
+              </button>
+            </div>
+
+            {/* A. Match Score card */}
+            <div style={{
+              background: "var(--tl-surface)",
+              border: "1px solid var(--tl-border)",
+              borderRadius: 12,
+              padding: "20px 24px",
+              display: "flex",
+              alignItems: "center",
+              gap: 20,
+              boxShadow: "var(--tl-shadow-sm)"
+            }}>
+              <ScoreRing score={61} size={88} strokeWidth={8} color="var(--tl-med-500)" />
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <div style={{ fontSize: 22, fontWeight: 800, letterSpacing: "-0.5px", marginBottom: 2 }}>
+                  61%
+                </div>
+                <div style={{ fontSize: 13, fontWeight: 600, color: "var(--tl-text)", marginBottom: 4 }}>
+                  Match Score · General Product Operations Resume
+                </div>
+                <div style={{ fontSize: 12, color: "var(--tl-text-subtle)" }}>
+                  Based on keyword overlap and experience alignment
+                </div>
+              </div>
+            </div>
+
+            {/* B. Missing Keywords */}
+            <div style={{
+              background: "var(--tl-surface)",
+              border: "1px solid var(--tl-border)",
+              borderRadius: 12,
+              padding: "16px 20px",
+              boxShadow: "var(--tl-shadow-sm)"
+            }}>
+              <p style={{
+                fontSize: 10,
+                fontFamily: "var(--tl-mono)",
+                fontWeight: 600,
+                textTransform: "uppercase",
+                letterSpacing: "1px",
+                color: "var(--tl-n-400)",
+                marginBottom: 12
+              }}>
+                Missing Keywords
+              </p>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+                {MISSING_KEYWORDS.map(kw => (
+                  <span
+                    key={kw}
+                    style={{
+                      background: "var(--tl-high-50)",
+                      border: "1px solid var(--tl-high-100)",
+                      color: "var(--tl-high-500)",
+                      borderRadius: 9999,
+                      padding: "4px 12px",
+                      fontSize: 12,
+                      fontWeight: 500
+                    }}
+                  >
+                    {kw}
+                  </span>
+                ))}
+              </div>
+            </div>
+
+            {/* C. Experience Alignment */}
+            <div style={{
+              background: "var(--tl-surface)",
+              border: "1px solid var(--tl-border)",
+              borderRadius: 12,
+              padding: "16px 20px",
+              boxShadow: "var(--tl-shadow-sm)"
+            }}>
+              <p style={{
+                fontSize: 10,
+                fontFamily: "var(--tl-mono)",
+                fontWeight: 600,
+                textTransform: "uppercase",
+                letterSpacing: "1px",
+                color: "var(--tl-n-400)",
+                marginBottom: 12
+              }}>
+                Experience Alignment
+              </p>
+              <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+                {ALIGNMENT_ITEMS.map((item, i) => {
+                  const iconColor = item.status === "pass"
+                    ? "var(--tl-low-500)"
+                    : item.status === "partial"
+                      ? "var(--tl-med-500)"
+                      : "var(--tl-high-500)";
+                  const iconBg = item.status === "pass"
+                    ? "var(--tl-low-50)"
+                    : item.status === "partial"
+                      ? "var(--tl-med-50)"
+                      : "var(--tl-high-50)";
+                  const iconBorder = item.status === "pass"
+                    ? "var(--tl-low-100)"
+                    : item.status === "partial"
+                      ? "var(--tl-med-100)"
+                      : "var(--tl-high-100)";
+
+                  return (
+                    <div key={i} style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                      <span style={{
+                        width: 22,
+                        height: 22,
+                        borderRadius: "50%",
+                        background: iconBg,
+                        border: `1.5px solid ${iconBorder}`,
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        fontSize: 11,
+                        fontWeight: 700,
+                        color: iconColor,
+                        flexShrink: 0
+                      }}>
+                        {item.icon}
+                      </span>
+                      <span style={{
+                        fontSize: 13,
+                        color: "var(--tl-text)",
+                        flex: 1
+                      }}>
+                        {item.label}
+                      </span>
+                      {item.note && (
+                        <span style={{
+                          fontSize: 11,
+                          fontWeight: 600,
+                          color: iconColor,
+                          fontFamily: "var(--tl-mono)",
+                          flexShrink: 0
+                        }}>
+                          {item.note}
+                        </span>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* D. Suggested Version Name */}
+            <div style={{
+              background: "var(--tl-surface)",
+              border: "1px solid var(--tl-border)",
+              borderRadius: 12,
+              padding: "16px 20px",
+              boxShadow: "var(--tl-shadow-sm)"
+            }}>
+              <label style={{
+                display: "block",
+                fontSize: 10,
+                fontFamily: "var(--tl-mono)",
+                fontWeight: 600,
+                textTransform: "uppercase",
+                letterSpacing: "1px",
+                color: "var(--tl-n-400)",
+                marginBottom: 8
+              }}>
+                Version Name
+              </label>
+              <input
+                type="text"
+                value={versionName}
+                onChange={e => setVersionName(e.target.value)}
+                style={{
+                  width: "100%",
+                  border: "1px solid var(--tl-border)",
+                  borderRadius: 8,
+                  padding: "9px 12px",
+                  fontFamily: "var(--tl-font)",
+                  fontSize: 14,
+                  fontWeight: 500,
+                  color: "var(--tl-text)",
+                  background: "var(--tl-n-50)",
+                  outline: "none",
+                  transition: "border-color 0.15s ease"
+                }}
+                onFocus={e => { e.target.style.borderColor = "var(--tl-brand-500)"; e.target.style.background = "var(--tl-surface)"; }}
+                onBlur={e => { e.target.style.borderColor = "var(--tl-border)"; e.target.style.background = "var(--tl-n-50)"; }}
+              />
+              <p style={{ fontSize: 12, color: "var(--tl-text-subtle)", marginTop: 6 }}>
+                This version will build on your fixed General Resume
+              </p>
+            </div>
+          </div>
+        );
+      }
+
+      /* ── RIGHT PANEL ──────────────────────────────────────────── */
+      function RightPanel({ analyzed, versionName, onCreateVersion, versionCreated }) {
+        return (
+          <aside style={{
+            width: 350,
+            flexShrink: 0,
+            display: "flex",
+            flexDirection: "column",
+            gap: 16
+          }}>
+            {/* Base resume selector */}
+            <div style={{
+              background: "var(--tl-surface)",
+              border: "1px solid var(--tl-border)",
+              borderRadius: 12,
+              padding: "16px 20px",
+              boxShadow: "var(--tl-shadow-sm)"
+            }}>
+              <p style={{ fontSize: 13, fontWeight: 700, marginBottom: 12, color: "var(--tl-text)" }}>
+                Base Resume
+              </p>
+              <div style={{
+                display: "flex",
+                alignItems: "center",
+                gap: 10,
+                padding: "10px 12px",
+                background: "var(--tl-n-50)",
+                borderRadius: 8,
+                border: "1px solid var(--tl-border)"
+              }}>
+                <div style={{
+                  width: 32,
+                  height: 32,
+                  borderRadius: 8,
+                  background: "var(--tl-brand-50)",
+                  border: "1px solid var(--tl-brand-100)",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  fontSize: 14,
+                  flexShrink: 0
+                }}>
+                  📄
+                </div>
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ fontSize: 13, fontWeight: 600, color: "var(--tl-text)", marginBottom: 2, lineHeight: 1.3 }}>
+                    General Product Operations Resume
+                  </div>
+                  <div style={{ fontSize: 11, color: "var(--tl-text-subtle)" }}>Fixed · last edited today</div>
+                </div>
+                <span style={{
+                  background: "var(--tl-brand-50)",
+                  border: "1px solid var(--tl-brand-100)",
+                  color: "var(--tl-brand-700)",
+                  borderRadius: 99,
+                  padding: "2px 8px",
+                  fontSize: 12,
+                  fontWeight: 700,
+                  flexShrink: 0
+                }}>
+                  84
+                </span>
+              </div>
+              <button style={{
+                background: "none",
+                border: "none",
+                padding: 0,
+                marginTop: 10,
+                fontSize: 12,
+                color: "var(--tl-text-subtle)",
+                fontFamily: "var(--tl-font)",
+                cursor: "default",
+                display: "block"
+              }}>
+                Change base resume
+              </button>
+            </div>
+
+            {/* Match score visual */}
+            {analyzed && (
+              <div style={{
+                background: "var(--tl-surface)",
+                border: "1px solid var(--tl-border)",
+                borderRadius: 12,
+                padding: "16px 20px",
+                boxShadow: "var(--tl-shadow-sm)"
+              }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 16, marginBottom: 16 }}>
+                  <ScoreRing score={61} size={80} strokeWidth={7} color="var(--tl-med-500)" />
+                  <div>
+                    <div style={{ fontSize: 13, fontWeight: 600, color: "var(--tl-text)", marginBottom: 2 }}>
+                      61% keyword overlap
+                    </div>
+                    <div style={{ fontSize: 12, color: "var(--tl-text-subtle)", lineHeight: 1.5 }}>
+                      with this role
+                    </div>
+                  </div>
+                </div>
+
+                {/* Keyword category progress rows */}
+                {[
+                  { label: "Core operations", pct: 80 },
+                  { label: "Product tooling", pct: 45 },
+                  { label: "Agile & OKRs",    pct: 15 },
+                  { label: "Data & analytics", pct: 30 },
+                ].map(row => (
+                  <div key={row.label} style={{ marginBottom: 10 }}>
+                    <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 4 }}>
+                      <span style={{ fontSize: 12, color: "var(--tl-text-muted)" }}>{row.label}</span>
+                      <span style={{ fontSize: 12, fontWeight: 600, color: row.pct >= 60 ? "var(--tl-low-500)" : row.pct >= 30 ? "var(--tl-med-500)" : "var(--tl-high-500)" }}>
+                        {row.pct}%
+                      </span>
+                    </div>
+                    <div style={{ height: 5, background: "var(--tl-n-200)", borderRadius: 99, overflow: "hidden" }}>
+                      <div style={{
+                        height: "100%",
+                        width: `${row.pct}%`,
+                        background: row.pct >= 60 ? "var(--tl-low-500)" : row.pct >= 30 ? "var(--tl-med-500)" : "var(--tl-high-500)",
+                        borderRadius: 99,
+                        transition: "width 0.6s ease"
+                      }} />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {/* Create version CTA or confirmation */}
+            {analyzed && (
+              versionCreated ? (
+                <div style={{
+                  background: "var(--tl-low-50)",
+                  border: "1px solid var(--tl-low-100)",
+                  borderRadius: 12,
+                  padding: "20px",
+                  boxShadow: "var(--tl-shadow-sm)"
+                }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 12 }}>
+                    <div style={{
+                      width: 32,
+                      height: 32,
+                      borderRadius: "50%",
+                      background: "var(--tl-low-100)",
+                      border: "1.5px solid var(--tl-low-500)",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      fontSize: 14,
+                      fontWeight: 700,
+                      color: "var(--tl-low-500)",
+                      flexShrink: 0
+                    }}>
+                      ✓
+                    </div>
+                    <div>
+                      <div style={{ fontSize: 13, fontWeight: 700, color: "var(--tl-low-500)" }}>
+                        Version Created
+                      </div>
+                      <div style={{ fontSize: 12, color: "var(--tl-text-muted)", marginTop: 1 }}>
+                        {versionName || "Product Operations Manager · B2B SaaS"}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 8,
+                    padding: "8px 12px",
+                    background: "var(--tl-surface)",
+                    borderRadius: 8,
+                    border: "1px solid var(--tl-low-100)",
+                    marginBottom: 14
+                  }}>
+                    <span style={{ fontSize: 12, color: "var(--tl-text-muted)", flex: 1 }}>
+                      Projected match score
+                    </span>
+                    <span style={{
+                      background: "var(--tl-brand-50)",
+                      border: "1px solid var(--tl-brand-100)",
+                      color: "var(--tl-brand-700)",
+                      borderRadius: 99,
+                      padding: "2px 8px",
+                      fontSize: 13,
+                      fontWeight: 700
+                    }}>
+                      78%
+                    </span>
+                  </div>
+
+                  <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+                    <a
+                      href="./resume-fix-workspace.html"
+                      style={{
+                        display: "block",
+                        textAlign: "center",
+                        background: "var(--tl-brand-500)",
+                        color: "#fff",
+                        borderRadius: 8,
+                        padding: "10px 0",
+                        fontSize: 13,
+                        fontWeight: 600,
+                        textDecoration: "none",
+                        fontFamily: "var(--tl-font)"
+                      }}
+                    >
+                      Open in Fix Workspace
+                    </a>
+                    <a
+                      href="./resume-version-history.html"
+                      style={{
+                        display: "block",
+                        textAlign: "center",
+                        fontSize: 13,
+                        fontWeight: 600,
+                        color: "var(--tl-brand-600)",
+                        textDecoration: "none",
+                        padding: "4px 0"
+                      }}
+                    >
+                      View all versions →
+                    </a>
+                  </div>
+                </div>
+              ) : (
+                <div style={{
+                  background: "var(--tl-surface)",
+                  border: "1px solid var(--tl-border)",
+                  borderRadius: 12,
+                  padding: "16px 20px",
+                  boxShadow: "var(--tl-shadow-sm)"
+                }}>
+                  <p style={{ fontSize: 13, color: "var(--tl-text-muted)", marginBottom: 14, lineHeight: 1.55 }}>
+                    A targeted version will incorporate the missing keywords and restructure your experience to match this role's priorities.
+                  </p>
+                  <button
+                    onClick={onCreateVersion}
+                    style={{
+                      width: "100%",
+                      height: 44,
+                      background: "var(--tl-brand-500)",
+                      color: "#fff",
+                      border: "none",
+                      borderRadius: 9,
+                      fontSize: 14,
+                      fontWeight: 700,
+                      fontFamily: "var(--tl-font)",
+                      cursor: "pointer",
+                      letterSpacing: "-0.1px",
+                      transition: "background 0.15s ease"
+                    }}
+                  >
+                    Create targeted version
+                  </button>
+                </div>
+              )
+            )}
+
+            {/* Prompt when not yet analyzed */}
+            {!analyzed && (
+              <div style={{
+                background: "var(--tl-surface)",
+                border: "1px solid var(--tl-border)",
+                borderRadius: 12,
+                padding: "20px",
+                textAlign: "center",
+                boxShadow: "var(--tl-shadow-sm)"
+              }}>
+                <div style={{
+                  width: 44,
+                  height: 44,
+                  borderRadius: "50%",
+                  background: "var(--tl-n-100)",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  fontSize: 20,
+                  margin: "0 auto 12px"
+                }}>
+                  🎯
+                </div>
+                <p style={{ fontSize: 13, color: "var(--tl-text-muted)", lineHeight: 1.6 }}>
+                  Paste a job description and click Analyze Match to see how well your resume aligns.
+                </p>
+              </div>
+            )}
+          </aside>
+        );
+      }
+
+      /* ── MAIN APP ─────────────────────────────────────────────── */
+      function App() {
+        const [jdText, setJdText] = useState("");
+        const [analyzed, setAnalyzed] = useState(false);
+        const [versionCreated, setVersionCreated] = useState(false);
+        const [versionName, setVersionName] = useState("Product Operations Manager · B2B SaaS");
+
+        function handleAnalyze() {
+          if (jdText.trim().length === 0) return;
+          setAnalyzed(true);
+          setVersionCreated(false);
+        }
+
+        function handleClear() {
+          setJdText("");
+          setAnalyzed(false);
+          setVersionCreated(false);
+          setVersionName("Product Operations Manager · B2B SaaS");
+        }
+
+        function handleCreateVersion() {
+          setVersionCreated(true);
+        }
+
+        return (
+          <>
+            <TopNav />
+
+            <main style={{
+              maxWidth: 1120,
+              margin: "0 auto",
+              padding: "24px 24px 80px",
+              display: "flex",
+              flexDirection: "column",
+              gap: 0
+            }}>
+              {/* Page title */}
+              <div style={{ marginBottom: 20 }}>
+                <h1 style={{ fontSize: 20, fontWeight: 800, letterSpacing: "-0.4px", marginBottom: 2 }}>
+                  Job Match Mode
+                </h1>
+                <p style={{ fontSize: 13, color: "var(--tl-text-muted)" }}>
+                  Sarah Chen · Product Operations Manager · Targeting a specific role
+                </p>
+              </div>
+
+              {/* Two-panel layout */}
+              <div className="two-panel" style={{
+                display: "flex",
+                gap: 24,
+                alignItems: "flex-start"
+              }}>
+                {/* Left panel */}
+                <div style={{ flex: 1.5, minWidth: 0 }}>
+                  <div style={{
+                    background: "var(--tl-surface)",
+                    border: "1px solid var(--tl-border)",
+                    borderRadius: 12,
+                    padding: "24px",
+                    boxShadow: "var(--tl-shadow-sm)"
+                  }}>
+                    {analyzed ? (
+                      <AnalysisResults
+                        versionName={versionName}
+                        setVersionName={setVersionName}
+                        onClear={handleClear}
+                      />
+                    ) : (
+                      <JDInputPanel
+                        jdText={jdText}
+                        setJdText={setJdText}
+                        onAnalyze={handleAnalyze}
+                      />
+                    )}
+                  </div>
+                </div>
+
+                {/* Right panel */}
+                <RightPanel
+                  analyzed={analyzed}
+                  versionName={versionName}
+                  onCreateVersion={handleCreateVersion}
+                  versionCreated={versionCreated}
+                />
+              </div>
+            </main>
+
+            {/* Responsive styles */}
+            <style>{`
+              @media (max-width: 900px) {
+                .two-panel {
+                  flex-direction: column !important;
+                }
+                .two-panel > aside {
+                  width: 100% !important;
+                }
+              }
+            `}</style>
+          </>
+        );
+      }
+
+      const root = ReactDOM.createRoot(document.getElementById("root"));
+      root.render(<App />);
+    </script>
+  </body>
+</html>
