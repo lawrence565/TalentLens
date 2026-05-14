@@ -1766,6 +1766,218 @@ const ResumeFixTask = ({ issue, onApply, onDismiss }) => {
   );
 };
 
+// ── FIX PROGRESS PANEL ───────────────────────────────────────────────────────
+const FixProgressPanel = ({ tasks, onDone }) => {
+  const handledCount = tasks.filter((t) => t.status === "handled").length;
+  const highRemaining = tasks.filter(
+    (t) => t.severity === "high" && t.status !== "handled"
+  ).length;
+  const allDone = handledCount === tasks.length;
+
+  const estimatedScore = 72 + handledCount * 4;
+
+  // SVG arc for score ring
+  const size = 96;
+  const r = 38;
+  const cx = size / 2;
+  const cy = size / 2;
+  const circumference = 2 * Math.PI * r;
+  const dashOffset = circumference * (1 - estimatedScore / 100);
+
+  const progressPct = tasks.length > 0 ? (handledCount / tasks.length) * 100 : 0;
+
+  const countRows = [
+    { label: "Issues found", value: tasks.length },
+    { label: "Handled", value: handledCount },
+    { label: "High priority remaining", value: highRemaining },
+  ];
+
+  return (
+    <div
+      style={{
+        background: "white",
+        border: "1px solid var(--tl-border)",
+        borderRadius: 14,
+        padding: "20px 24px",
+        boxShadow: "var(--tl-shadow-md)",
+      }}
+    >
+      {/* Section 1 — Score Ring */}
+      <div style={{ display: "flex", flexDirection: "column", alignItems: "center", marginBottom: 20 }}>
+        <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
+          {/* Background circle */}
+          <circle
+            cx={cx}
+            cy={cy}
+            r={r}
+            stroke="var(--tl-n-100)"
+            strokeWidth={8}
+            fill="none"
+          />
+          {/* Progress arc */}
+          <circle
+            cx={cx}
+            cy={cy}
+            r={r}
+            stroke="var(--tl-brand-500)"
+            strokeWidth={8}
+            fill="none"
+            strokeLinecap="round"
+            strokeDasharray={circumference}
+            strokeDashoffset={dashOffset}
+            style={{
+              transition: "stroke-dashoffset 0.6s ease",
+              transformOrigin: "center",
+              transform: "rotate(-90deg)",
+            }}
+          />
+          {/* Score numeral */}
+          <text
+            x={cx}
+            y={cy + 7}
+            textAnchor="middle"
+            fontFamily="var(--tl-mono)"
+            fontSize="20"
+            fontWeight="700"
+            fill="var(--tl-brand-500)"
+          >
+            {estimatedScore}
+          </text>
+        </svg>
+        <div
+          style={{
+            fontFamily: "var(--tl-mono)",
+            fontSize: 10,
+            textTransform: "uppercase",
+            letterSpacing: "0.09em",
+            color: "var(--tl-n-400)",
+            marginTop: 6,
+          }}
+        >
+          Estimated score
+        </div>
+      </div>
+
+      {/* Section 2 — Issue Counts */}
+      <div style={{ marginBottom: 16 }}>
+        {countRows.map(({ label, value }, idx) => (
+          <div
+            key={label}
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              padding: "8px 0",
+              borderBottom: idx < countRows.length - 1 ? "1px solid var(--tl-n-100)" : "none",
+            }}
+          >
+            <span
+              style={{
+                fontFamily: "var(--tl-font)",
+                fontSize: 13,
+                color: "var(--tl-text-muted)",
+              }}
+            >
+              {label}
+            </span>
+            <span
+              style={{
+                fontFamily: "var(--tl-mono)",
+                fontSize: 13,
+                fontWeight: 700,
+                color: "var(--tl-text)",
+              }}
+            >
+              {value}
+            </span>
+          </div>
+        ))}
+      </div>
+
+      {/* Section 3 — Progress Bar */}
+      <div style={{ marginBottom: 16 }}>
+        <div
+          style={{
+            fontFamily: "var(--tl-mono)",
+            fontSize: 10,
+            textTransform: "uppercase",
+            letterSpacing: "0.09em",
+            color: "var(--tl-n-400)",
+            marginBottom: 8,
+          }}
+        >
+          Progress
+        </div>
+        <div
+          style={{
+            height: 6,
+            background: "var(--tl-n-100)",
+            borderRadius: 3,
+          }}
+        >
+          <div
+            style={{
+              height: 6,
+              width: `${progressPct}%`,
+              background: "var(--tl-brand-500)",
+              borderRadius: 3,
+              transition: "width 0.4s ease",
+            }}
+          />
+        </div>
+      </div>
+
+      {/* Section 4 — Guard copy */}
+      <p
+        style={{
+          fontFamily: "var(--tl-font)",
+          fontSize: 11,
+          color: "var(--tl-text-subtle)",
+          lineHeight: 1.5,
+          marginTop: 16,
+          marginBottom: 0,
+        }}
+      >
+        Estimated score reflects resolved diagnostic issues, not hiring probability.
+      </p>
+
+      {/* Section 5 — Export readiness */}
+      {allDone ? (
+        <button
+          type="button"
+          onClick={() => onDone ? onDone() : alert("Resume saved!")}
+          style={{
+            marginTop: 16,
+            width: "100%",
+            background: "var(--tl-brand-500)",
+            color: "white",
+            border: "none",
+            borderRadius: 8,
+            padding: 10,
+            fontFamily: "var(--tl-font)",
+            fontSize: 13,
+            fontWeight: 600,
+            cursor: "pointer",
+          }}
+        >
+          Save Fixed Resume
+        </button>
+      ) : (
+        <div
+          style={{
+            fontFamily: "var(--tl-font)",
+            fontSize: 12,
+            color: "var(--tl-text-subtle)",
+            textAlign: "center",
+            marginTop: 12,
+          }}
+        >
+          Fix remaining issues to unlock export
+        </div>
+      )}
+    </div>
+  );
+};
+
 // ── RESUME FIX WORKSPACE SECTION (demo) ──────────────────────────────────────
 const ResumeFixWorkspaceSection = () => {
   const [tasks, setTasks] = useState(resumeFixIssues);
@@ -1783,64 +1995,88 @@ const ResumeFixWorkspaceSection = () => {
   };
 
   return (
-    <section id="fix-workspace" style={{ paddingBottom: 72 }}>
-      <FeatSectionTitle>Fix Task Workspace</FeatSectionTitle>
-      <FeatSectionDesc>
-        Each ResumeFixTask card turns an issue into an actionable step. Select
-        an AI rewrite option, click Apply to see a Before / After diff, or Mark
-        Done to dismiss. The Copy bullet button appears after applying.
-      </FeatSectionDesc>
-      {tasks.map((issue) => (
-        <ResumeFixTask
-          key={issue.id}
-          issue={issue}
-          onApply={handleApply}
-          onDismiss={handleDismiss}
-        />
-      ))}
+    <section id="fix-workspace" style={{ display: "flex", gap: 24, alignItems: "flex-start", paddingBottom: 72 }}>
+      {/* Left column — tasks */}
+      <div style={{ flex: 1, minWidth: 0 }}>
+        <div style={{ marginBottom: 24 }}>
+          <h2
+            style={{
+              fontFamily: "var(--tl-font)",
+              fontSize: 24,
+              fontWeight: 800,
+              color: "var(--tl-n-900)",
+              marginBottom: 8,
+              letterSpacing: "-0.01em",
+            }}
+          >
+            Resume Fix Workspace
+          </h2>
+          <p
+            style={{
+              fontFamily: "var(--tl-font)",
+              fontSize: 14,
+              color: "var(--tl-text-muted)",
+              lineHeight: 1.6,
+            }}
+          >
+            Work through each diagnostic issue with AI-assisted rewrites.
+          </p>
+        </div>
+        {tasks.map((issue) => (
+          <ResumeFixTask
+            key={issue.id}
+            issue={issue}
+            onApply={handleApply}
+            onDismiss={handleDismiss}
+          />
+        ))}
+      </div>
+
+      {/* Right column — progress panel */}
+      <div style={{ width: 280, flexShrink: 0, position: "sticky", top: 72 }}>
+        <FixProgressPanel tasks={tasks} />
+      </div>
     </section>
   );
 };
 
-// ── REMAINING PLACEHOLDER STUBS (Tasks 3+) ────────────────────────────────────
+// ── PROGRESS PANEL ISOLATED DEMO ─────────────────────────────────────────────
+const ProgressPanelSection = () => {
+  const [tasks, setTasks] = useState([
+    ...resumeFixIssues.slice(0, 1).map((t) => ({ ...t, status: "handled" })),
+    ...resumeFixIssues.slice(1),
+  ]);
 
-const FixProgressPanel = () => (
-  <div
-    style={{
-      background: "var(--tl-surface)",
-      border: "2px dashed var(--tl-brand-300)",
-      borderRadius: 14,
-      padding: 36,
-      textAlign: "center",
-      marginTop: 24,
-    }}
-  >
-    <div
-      style={{
-        fontFamily: "var(--tl-font)",
-        fontSize: 16,
-        fontWeight: 800,
-        color: "var(--tl-brand-700)",
-        letterSpacing: "-0.01em",
-        marginBottom: 8,
-      }}
-    >
-      FixProgressPanel
-    </div>
-    <div
-      style={{
-        fontFamily: "var(--tl-font)",
-        fontSize: 13,
-        color: "var(--tl-n-500)",
-        lineHeight: 1.65,
-        maxWidth: 380,
-        margin: "0 auto",
-      }}
-    >
-      Tracks handled issues, current vs. estimated score, and export readiness.
-    </div>
-  </div>
-);
+  return (
+    <section id="progress-panel">
+      <h2
+        style={{
+          fontFamily: "var(--tl-font)",
+          fontSize: 24,
+          fontWeight: 800,
+          color: "var(--tl-n-900)",
+          marginBottom: 8,
+        }}
+      >
+        Fix Progress Panel
+      </h2>
+      <p
+        style={{
+          fontFamily: "var(--tl-font)",
+          fontSize: 14,
+          color: "var(--tl-text-muted)",
+          lineHeight: 1.6,
+          marginBottom: 32,
+        }}
+      >
+        Shows score estimate, issue counts, progress, and export readiness.
+      </p>
+      <div style={{ maxWidth: 300 }}>
+        <FixProgressPanel tasks={tasks} />
+      </div>
+    </section>
+  );
+};
 
 const JobMatchPreview = () => (
   <div

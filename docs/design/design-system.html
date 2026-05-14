@@ -426,6 +426,7 @@
           group: "Fix Workspace",
           items: [
             { id: "fix-workspace", label: "Fix Task" },
+            { id: "progress-panel", label: "Progress Panel" },
           ],
         },
       ];
@@ -478,6 +479,7 @@
           ats: "ATS Checks",
           header: "Page Header",
           "fix-workspace": "Fix Task",
+          "progress-panel": "Progress Panel",
         };
         const group =
           NAV.find((g) => g.items.find((i) => i.id === active))?.group ||
@@ -768,6 +770,7 @@
         ats: () => <ATSSection />,
         header: () => <HeaderSection />,
         "fix-workspace": () => <ResumeFixWorkspaceSection />,
+        "progress-panel": () => <ProgressPanelSection />,
       };
 
       // ── APP ────────────────────────────────────────────────────────
