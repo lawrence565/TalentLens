@@ -1,6 +1,7 @@
 import Anthropic from '@anthropic-ai/sdk'
 import type { DiagnosisProvider, DiagnosisReportDraft } from './diagnosisProvider'
 import { extractResumeText } from './resumeTextExtractor'
+import type { DiagnosisIssue, ATSCheck } from '../../../src/types'
 
 const diagnosisTool: Anthropic.Tool = {
   name: 'submit_diagnosis',
@@ -21,6 +22,8 @@ const diagnosisTool: Anthropic.Tool = {
       issues: {
         type: 'array',
         description: 'Top 3 to 5 resume issues ordered by priority (1 = most important).',
+        minItems: 3,
+        maxItems: 5,
         items: {
           type: 'object',
           properties: {
@@ -40,6 +43,8 @@ const diagnosisTool: Anthropic.Tool = {
       atsChecks: {
         type: 'array',
         description: 'ATS readability checks covering parsing, headings, readability, and file format.',
+        minItems: 1,
+        maxItems: 4,
         items: {
           type: 'object',
           properties: {
@@ -63,22 +68,9 @@ const diagnosisTool: Anthropic.Tool = {
   },
 }
 
-interface RawIssue {
-  title: string
-  severity: 'high' | 'medium' | 'low'
-  category: 'content_clarity' | 'structure' | 'keywords' | 'missing_sections' | 'formatting' | 'ats_risk'
-  reason: string
-  nextAction: string
-  priority: number
-}
+type RawIssue = Omit<DiagnosisIssue, 'id' | 'status' | 'additionalCategories'>
 
-interface RawATSCheck {
-  type: 'parsing' | 'headings' | 'readability' | 'file_format'
-  label: string
-  status: 'pass' | 'warning' | 'fail'
-  reason: string
-  nextAction: string
-}
+type RawATSCheck = Omit<ATSCheck, 'id'>
 
 interface DiagnosisToolInput {
   overallScore: number
@@ -88,18 +80,8 @@ interface DiagnosisToolInput {
   followUpPrompts: string[]
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const AnthropicCtor = Anthropic as any
-const createAnthropicClient = (opts: { apiKey: string }): Anthropic => {
-  try {
-    return AnthropicCtor(opts) as Anthropic
-  } catch {
-    return new Anthropic(opts)
-  }
-}
-
 export const createClaudeDiagnosisProvider = ({ apiKey }: { apiKey: string }): DiagnosisProvider => {
-  const client = createAnthropicClient({ apiKey })
+  const client = new Anthropic({ apiKey })
 
   return {
     async generateReport({ resume, analysisId: _ }) {
@@ -136,7 +118,7 @@ export const createClaudeDiagnosisProvider = ({ apiKey }: { apiKey: string }): D
       const draft: DiagnosisReportDraft = {
         overallScore: input.overallScore,
         summary: input.summary,
-        issues: input.issues.map((issue, index) => ({
+        issues: input.issues.map((issue) => ({
           id: '',
           title: issue.title,
           severity: issue.severity,
@@ -144,7 +126,7 @@ export const createClaudeDiagnosisProvider = ({ apiKey }: { apiKey: string }): D
           reason: issue.reason,
           nextAction: issue.nextAction,
           status: 'open',
-          priority: issue.priority ?? index + 1,
+          priority: issue.priority,
         })),
         atsChecks: input.atsChecks.map((check) => ({
           id: '',
