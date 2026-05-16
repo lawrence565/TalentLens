@@ -89,7 +89,14 @@ interface DiagnosisToolInput {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const createAnthropicClient = (opts: { apiKey: string }): Anthropic => (Anthropic as any)(opts) ?? new Anthropic(opts)
+const AnthropicCtor = Anthropic as any
+const createAnthropicClient = (opts: { apiKey: string }): Anthropic => {
+  try {
+    return AnthropicCtor(opts) as Anthropic
+  } catch {
+    return new Anthropic(opts)
+  }
+}
 
 export const createClaudeDiagnosisProvider = ({ apiKey }: { apiKey: string }): DiagnosisProvider => {
   const client = createAnthropicClient({ apiKey })
